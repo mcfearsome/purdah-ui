@@ -1,6 +1,6 @@
 //! Design token definitions for the 3-layer token system.
 
-use gpui::{hsla, px, Hsla, Pixels};
+use gpui::{hsla, px, FontWeight, Hsla, Pixels};
 
 /// Layer 1: Global Tokens - Foundational values
 ///
@@ -684,3 +684,276 @@ impl ButtonTokens {
         }
     }
 }
+
+/// Layer 3: Component-Specific Tokens - Label
+///
+/// Label-specific styling tokens derived from alias and global tokens.
+///
+/// ## Example
+///
+/// ```rust,no_run
+/// use purdah_gpui_components::theme::{Theme, LabelTokens};
+///
+/// let theme = Theme::light();
+/// let tokens = LabelTokens::from_theme(&theme);
+/// let body_size = tokens.font_size_body;
+/// ```
+#[derive(Debug, Clone)]
+pub struct LabelTokens {
+    // Typography - Font sizes for each variant
+    /// Body text font size (16px)
+    pub font_size_body: Pixels,
+    /// Caption text font size (14px)
+    pub font_size_caption: Pixels,
+    /// Heading 1 font size (30px)
+    pub font_size_heading_1: Pixels,
+    /// Heading 2 font size (24px)
+    pub font_size_heading_2: Pixels,
+    /// Heading 3 font size (20px)
+    pub font_size_heading_3: Pixels,
+
+    // Typography - Font weights for each variant
+    /// Body text font weight (normal/400)
+    pub font_weight_body: FontWeight,
+    /// Caption text font weight (normal/400)
+    pub font_weight_caption: FontWeight,
+    /// Heading 1 font weight (bold/700)
+    pub font_weight_heading_1: FontWeight,
+    /// Heading 2 font weight (semibold/600)
+    pub font_weight_heading_2: FontWeight,
+    /// Heading 3 font weight (semibold/600)
+    pub font_weight_heading_3: FontWeight,
+
+    // Colors - Text colors for each variant
+    /// Primary text color for body and headings
+    pub color_primary: Hsla,
+    /// Secondary text color for captions
+    pub color_secondary: Hsla,
+}
+
+impl LabelTokens {
+    /// Create label tokens from a theme
+    ///
+    /// ## Example
+    ///
+    /// ```rust,no_run
+    /// use purdah_gpui_components::theme::{Theme, LabelTokens};
+    ///
+    /// let theme = Theme::light();
+    /// let tokens = LabelTokens::from_theme(&theme);
+    /// ```
+    pub fn from_theme(theme: &super::Theme) -> Self {
+        Self {
+            // Font sizes - map to global token scale
+            font_size_body: theme.alias.font_size_body,
+            font_size_caption: theme.alias.font_size_caption,
+            font_size_heading_1: theme.global.font_size_3xl,
+            font_size_heading_2: theme.global.font_size_2xl,
+            font_size_heading_3: theme.global.font_size_xl,
+
+            // Font weights - convert u16 to FontWeight
+            font_weight_body: FontWeight(theme.global.font_weight_normal as f32),
+            font_weight_caption: FontWeight(theme.global.font_weight_normal as f32),
+            font_weight_heading_1: FontWeight(theme.global.font_weight_bold as f32),
+            font_weight_heading_2: FontWeight(theme.global.font_weight_semibold as f32),
+            font_weight_heading_3: FontWeight(theme.global.font_weight_semibold as f32),
+
+            // Colors - semantic text colors
+            color_primary: theme.alias.color_text_primary,
+            color_secondary: theme.alias.color_text_secondary,
+        }
+    }
+}
+
+/// Layer 3: Component-Specific Tokens - Input
+///
+/// Input-specific styling tokens derived from alias and global tokens.
+///
+/// ## Example
+///
+/// ```rust,no_run
+/// use purdah_gpui_components::theme::{Theme, InputTokens};
+///
+/// let theme = Theme::light();
+/// let tokens = InputTokens::from_theme(&theme);
+/// let border_color = tokens.border_default;
+/// ```
+#[derive(Debug, Clone)]
+pub struct InputTokens {
+    // Background colors
+    /// Input background color (default state)
+    pub background: Hsla,
+    /// Input background when disabled
+    pub background_disabled: Hsla,
+
+    // Border colors - States
+    /// Border color in default state
+    pub border_default: Hsla,
+    /// Border color on hover
+    pub border_hover: Hsla,
+    /// Border color when focused
+    pub border_focus: Hsla,
+    /// Border color in error state
+    pub border_error: Hsla,
+
+    // Text colors
+    /// Input text color
+    pub text_color: Hsla,
+    /// Placeholder text color
+    pub text_placeholder: Hsla,
+    /// Text color when disabled
+    pub text_disabled: Hsla,
+    /// Error message text color
+    pub text_error: Hsla,
+
+    // Layout & spacing
+    /// Horizontal padding
+    pub padding_x: Pixels,
+    /// Vertical padding
+    pub padding_y: Pixels,
+
+    // Typography
+    /// Input text font size
+    pub font_size: Pixels,
+    /// Input text font weight
+    pub font_weight: FontWeight,
+
+    // Border & radius
+    /// Border width
+    pub border_width: Pixels,
+    /// Border radius for rounded corners
+    pub border_radius: Pixels,
+
+    // Focus state (accessibility)
+    /// Focus ring color
+    pub focus_ring_color: Hsla,
+    /// Focus ring width
+    pub focus_ring_width: Pixels,
+}
+
+impl InputTokens {
+    /// Create input tokens from a theme
+    ///
+    /// ## Example
+    ///
+    /// ```rust,no_run
+    /// use purdah_gpui_components::theme::{Theme, InputTokens};
+    ///
+    /// let theme = Theme::light();
+    /// let tokens = InputTokens::from_theme(&theme);
+    /// ```
+    pub fn from_theme(theme: &super::Theme) -> Self {
+        Self {
+            // Background colors
+            background: theme.alias.color_surface,
+            background_disabled: if theme.is_dark() {
+                theme.global.gray_800
+            } else {
+                theme.global.gray_100
+            },
+
+            // Border colors for different states
+            border_default: theme.alias.color_border,
+            border_hover: theme.alias.color_border_hover,
+            border_focus: theme.alias.color_border_focus,
+            border_error: theme.alias.color_danger,
+
+            // Text colors
+            text_color: theme.alias.color_text_primary,
+            text_placeholder: theme.alias.color_text_muted,
+            text_disabled: theme.alias.color_text_muted,
+            text_error: theme.alias.color_danger,
+
+            // Layout - standard form input sizing
+            padding_x: theme.alias.spacing_component_padding,
+            padding_y: theme.alias.spacing_component_gap,
+
+            // Typography - body text sizing
+            font_size: theme.alias.font_size_body,
+            font_weight: FontWeight(theme.global.font_weight_normal as f32),
+
+            // Border & radius
+            border_width: px(1.0),
+            border_radius: theme.global.radius_md,
+
+            // Focus state - consistent with Button
+            focus_ring_color: theme.alias.color_border_focus,
+            focus_ring_width: px(2.0),
+        }
+    }
+}
+
+/// Layer 3: Component-Specific Tokens - Icon
+///
+/// Icon-specific styling tokens derived from alias and global tokens.
+///
+/// ## Example
+///
+/// ```rust,no_run
+/// use purdah_gpui_components::theme::{Theme, IconTokens};
+///
+/// let theme = Theme::light();
+/// let tokens = IconTokens::from_theme(&theme);
+/// let icon_size = tokens.size_md;
+/// ```
+#[derive(Debug, Clone)]
+pub struct IconTokens {
+    // Sizes
+    /// Extra small icon size (12px)
+    pub size_xs: Pixels,
+    /// Small icon size (16px)
+    pub size_sm: Pixels,
+    /// Medium icon size (20px)
+    pub size_md: Pixels,
+    /// Large icon size (24px)
+    pub size_lg: Pixels,
+    /// Extra large icon size (32px)
+    pub size_xl: Pixels,
+
+    // Colors
+    /// Default icon color
+    pub color_default: Hsla,
+    /// Muted icon color (for secondary/disabled states)
+    pub color_muted: Hsla,
+    /// Primary icon color
+    pub color_primary: Hsla,
+    /// Danger icon color
+    pub color_danger: Hsla,
+    /// Success icon color
+    pub color_success: Hsla,
+    /// Warning icon color
+    pub color_warning: Hsla,
+}
+
+impl IconTokens {
+    /// Create icon tokens from a theme
+    ///
+    /// ## Example
+    ///
+    /// ```rust,no_run
+    /// use purdah_gpui_components::theme::{Theme, IconTokens};
+    ///
+    /// let theme = Theme::light();
+    /// let tokens = IconTokens::from_theme(&theme);
+    /// ```
+    pub fn from_theme(theme: &super::Theme) -> Self {
+        Self {
+            // Sizes - aligned with font sizes for inline usage
+            size_xs: theme.global.font_size_xs,
+            size_sm: theme.global.font_size_sm,
+            size_md: theme.alias.font_size_body,
+            size_lg: theme.global.font_size_xl,
+            size_xl: theme.global.font_size_2xl,
+
+            // Colors - semantic icon colors
+            color_default: theme.alias.color_text_primary,
+            color_muted: theme.alias.color_text_muted,
+            color_primary: theme.alias.color_primary,
+            color_danger: theme.alias.color_danger,
+            color_success: theme.alias.color_success,
+            color_warning: theme.alias.color_warning,
+        }
+    }
+}
+
+

@@ -8,13 +8,14 @@
 
 // Re-export theme types
 pub use crate::theme::{
-    AliasTokens, GlobalTokens, Theme, ThemeMode,
+    AliasTokens, ButtonTokens, GlobalTokens, InputTokens, LabelTokens, Theme, ThemeMode,
 };
 
 // Re-export atom components
 pub use crate::atoms::{
     Label, LabelVariant,
     Button, ButtonProps, ButtonSize, ButtonVariant,
+    Input, InputProps,
 };
 
 // Re-export GPUI core types for convenience

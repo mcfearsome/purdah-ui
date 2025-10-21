@@ -42,6 +42,7 @@
 #![allow(clippy::module_name_repetitions)]
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::missing_panics_doc)]
+#![recursion_limit = "512"]
 
 pub mod theme;
 pub mod atoms;

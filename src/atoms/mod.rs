@@ -7,7 +7,8 @@
 //!
 //! - [`Label`]: Text display with typography variants
 //! - [`Button`]: Interactive button with variants and states
-//! - [`Icon`]: SVG icon display (coming soon: Lucide integration)
+//! - [`Input`]: Text input with validation states
+//! - `Icon`: SVG icon display (coming soon: Lucide integration)
 //!
 //! ## Example
 //!
@@ -27,9 +28,11 @@
 
 pub mod label;
 pub mod button;
+pub mod input;
 // pub mod icon;    // Coming soon: Lucide integration
 // pub mod badge;   // Coming soon
 // pub mod avatar;  // Coming soon
 
 pub use label::{Label, LabelVariant};
 pub use button::{Button, ButtonProps, ButtonSize, ButtonVariant};
+pub use input::{Input, InputProps};
