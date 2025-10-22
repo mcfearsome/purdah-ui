@@ -25,37 +25,54 @@ purdah-gpui-components = "0.1"
 
 ## 🏃 Quick Start
 
-```rust
+To get started, you can use the built-in themes and components. Here's a simple example of how to use the `Button` and `Input` components:
+
+```rust,no_run
 use purdah_gpui_components::prelude::*;
 
 fn main() {
-    // Use the theme system
+    // --- Theme System ---
+    // Select a theme (light or dark)
     let theme = Theme::light();
 
-    // Access design tokens
+    // Access design tokens for custom styling
     let primary_color = theme.alias.color_primary;
     let base_spacing = theme.global.spacing_base;
 
-    // Switch themes
+    // Themes can be switched at runtime
     let dark_theme = theme.with_mode(ThemeMode::Dark);
+
+
+    // --- Component Usage ---
+    // Create a primary button
+    let save_button = Button::new()
+        .label("Save Changes")
+        .variant(ButtonVariant::Primary)
+        .size(ButtonSize::Lg);
+
+    // Create a text input with a placeholder
+    let name_input = Input::new()
+        .placeholder("Enter your name...");
+
+    // Create a heading label
+    let title = Label::new("Settings")
+        .variant(LabelVariant::Heading1);
 }
 ```
 
 ## 📚 Documentation
 
-- [Getting Started](docs/getting-started.md) (coming soon)
-- [Theme System](docs/theming.md) (coming soon)
-- [API Reference](https://docs.rs/purdah-gpui-components) (coming soon)
+- **API Reference**: The public API is fully documented. Run `cargo doc --open` to view the documentation.
 
 ## 🎯 Roadmap
 
-### Phase 1: Foundation ✅ (Current)
+### Phase 1: Foundation ✅
 - [x] Design token system
 - [x] Theme system (light/dark modes)
+- [x] Core atoms (Button, Input, Label)
 - [ ] Icon system (Lucide integration)
-- [ ] Core atoms (Button, Input, Label)
 
-### Phase 2: Core Components
+### Phase 2: Core Components (Up Next)
 - [ ] Remaining atoms (Badge, Avatar, Checkbox, Radio, Switch)
 - [ ] Core molecules (SearchBar, FormGroup, TabGroup, Dropdown)
 - [ ] Accessibility utilities (FocusTrap, Announcer)

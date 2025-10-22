@@ -16,6 +16,11 @@
 //!
 //! // Switch themes at runtime
 //! let dark_theme = theme.with_mode(ThemeMode::Dark);
+//!
+//! // Example of using a component
+//! Button::new()
+//!     .label("Click me")
+//!     .variant(ButtonVariant::Primary);
 //! ```
 //!
 //! ## Features
@@ -29,7 +34,7 @@
 //! ## Module Organization
 //!
 //! - [`theme`]: Design token system and theming
-//! - `atoms`: Primitive components (Button, Input, Icon, etc.) - *coming soon*
+//! - [`atoms`]: Primitive components (Button, Input, Label, etc.)
 //! - `molecules`: Composite components (SearchBar, FormGroup, etc.) - *coming soon*
 //! - `organisms`: Complex components (Dialog, Table, etc.) - *coming soon*
 //! - `layout`: Layout primitives (VStack, HStack, Grid, etc.) - *coming soon*

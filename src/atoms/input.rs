@@ -3,22 +3,28 @@
 use gpui::*;
 use crate::theme::{InputTokens, Theme};
 
-/// Input configuration properties
+/// Represents the properties for configuring an `Input` component.
+///
+/// This struct holds all the configurable parameters for a text input field,
+/// such as its value, placeholder, and validation states.
 #[derive(Clone)]
 pub struct InputProps {
-    /// Input value
+    /// The current text value of the input field.
     pub value: SharedString,
-    /// Placeholder text when empty
+    /// The placeholder text displayed when the input value is empty.
     pub placeholder: SharedString,
-    /// Whether input is disabled
+    /// If `true`, the input will be visually styled as disabled and will not
+    /// respond to user interactions.
     pub disabled: bool,
-    /// Whether input is in error state
+    /// If `true`, the input will be styled to indicate a validation error.
     pub error: bool,
-    /// Optional error message
+    /// An optional message to display below the input, typically used for
+    /// validation feedback when `error` is `true`.
     pub error_message: Option<SharedString>,
 }
 
 impl Default for InputProps {
+    /// Returns the default properties for an input field.
     fn default() -> Self {
         Self {
             value: "".into(),
@@ -30,115 +36,131 @@ impl Default for InputProps {
     }
 }
 
-/// A text input component with validation states.
+/// A text input component for forms and text entry.
 ///
-/// Input is a form element for text entry with support for
-/// disabled, error, and focus states.
+/// `Input` provides a configurable text field with support for placeholders,
+/// disabled states, and validation error states. It is configured using a
+/// builder pattern.
 ///
 /// ## Example
 ///
-/// ```rust,ignore
-/// use purdah_gpui_components::atoms::*;
+/// ```rust, no_run
+/// use purdah_gpui_components::prelude::*;
 ///
-/// // Basic input
-/// Input::new()
-///     .placeholder("Enter your name");
+/// // An empty input field with a placeholder.
+/// let email_input = Input::new()
+///     .placeholder("Enter your email");
 ///
-/// // Input with value
-/// Input::new()
-///     .value("John Doe")
-///     .placeholder("Name");
-///
-/// // Disabled input
-/// Input::new()
-///     .disabled(true);
-///
-/// // Error state with message
-/// Input::new()
+/// // An input field in an error state with a message.
+/// let password_input = Input::new()
+///     .placeholder("Enter your password")
 ///     .error(true)
-///     .error_message("This field is required");
+///     .error_message("Password is required.");
 /// ```
 pub struct Input {
+    /// The properties used to configure the input's appearance and behavior.
     props: InputProps,
 }
 
 impl Input {
-    /// Create a new input with default props
+    /// Creates a new `Input` with default properties.
     ///
-    /// ## Example
-    ///
-    /// ```rust,ignore
-    /// let input = Input::new();
-    /// ```
+    /// This is the entry point for building a new input component.
+    /// Default values are specified in `InputProps::default()`.
     pub fn new() -> Self {
         Self {
             props: InputProps::default(),
         }
     }
 
-    /// Set the input value
+    /// Sets the text value of the input field.
     ///
-    /// ## Example
+    /// # Arguments
     ///
-    /// ```rust,ignore
-    /// Input::new().value("John Doe");
-    /// ```
+    /// * `value` - A type that can be converted into a `SharedString`, e.g., `&'static str`.
+    ///
+    /// # Returns
+    ///
+    /// The `Input` instance with the new value.
     pub fn value(mut self, value: impl Into<SharedString>) -> Self {
         self.props.value = value.into();
         self
     }
 
-    /// Set the placeholder text
+    /// Sets the placeholder text for the input field.
     ///
-    /// ## Example
+    /// The placeholder is displayed only when the input's value is empty.
     ///
-    /// ```rust,ignore
-    /// Input::new().placeholder("Enter text...");
-    /// ```
+    /// # Arguments
+    ///
+    /// * `placeholder` - A type that can be converted into a `SharedString`.
+    ///
+    /// # Returns
+    ///
+    /// The `Input` instance with the new placeholder.
     pub fn placeholder(mut self, placeholder: impl Into<SharedString>) -> Self {
         self.props.placeholder = placeholder.into();
         self
     }
 
-    /// Set whether the input is disabled
+    /// Sets the disabled state of the input field.
     ///
-    /// ## Example
+    /// A disabled input is visually distinct and does not respond to user interaction.
     ///
-    /// ```rust,ignore
-    /// Input::new().disabled(true);
-    /// ```
+    /// # Arguments
+    ///
+    /// * `disabled` - A boolean indicating whether the input should be disabled.
+    ///
+    /// # Returns
+    ///
+    /// The `Input` instance with the new disabled state.
     pub fn disabled(mut self, disabled: bool) -> Self {
         self.props.disabled = disabled;
         self
     }
 
-    /// Set whether the input is in error state
+    /// Sets the error state of the input field.
     ///
-    /// ## Example
+    /// This is used to visually indicate a validation error, typically by changing
+    /// the border color.
     ///
-    /// ```rust,ignore
-    /// Input::new().error(true);
-    /// ```
+    /// # Arguments
+    ///
+    /// * `error` - A boolean indicating whether the input should be in an error state.
+    ///
+    /// # Returns
+    ///
+    /// The `Input` instance with the new error state.
     pub fn error(mut self, error: bool) -> Self {
         self.props.error = error;
         self
     }
 
-    /// Set an error message to display
+    /// Sets the error message to be displayed below the input field.
     ///
-    /// ## Example
+    /// This message is typically shown when the `error` state is `true`.
     ///
-    /// ```rust,ignore
-    /// Input::new()
-    ///     .error(true)
-    ///     .error_message("Invalid email format");
-    /// ```
+    /// # Arguments
+    ///
+    /// * `message` - A type that can be converted into a `SharedString`.
+    ///
+    /// # Returns
+    ///
+    /// The `Input` instance with the new error message.
     pub fn error_message(mut self, message: impl Into<SharedString>) -> Self {
         self.props.error_message = Some(message.into());
         self
     }
 
-    /// Get border color based on state
+    /// Gets the border color for the input field based on its error state.
+    ///
+    /// # Arguments
+    ///
+    /// * `tokens` - The input tokens from the theme.
+    ///
+    /// # Returns
+    ///
+    /// The appropriate `Hsla` color for the input's border.
     fn border_color(&self, tokens: &InputTokens) -> Hsla {
         if self.props.error {
             tokens.border_error
@@ -147,7 +169,15 @@ impl Input {
         }
     }
 
-    /// Get background color based on state
+    /// Gets the background color for the input field based on its disabled state.
+    ///
+    /// # Arguments
+    ///
+    /// * `tokens` - The input tokens from the theme.
+    ///
+    /// # Returns
+    ///
+    /// The appropriate `Hsla` color for the input's background.
     fn background_color(&self, tokens: &InputTokens) -> Hsla {
         if self.props.disabled {
             tokens.background_disabled
@@ -156,7 +186,15 @@ impl Input {
         }
     }
 
-    /// Get text color based on state
+    /// Gets the text color for the input field based on its disabled state.
+    ///
+    /// # Arguments
+    ///
+    /// * `tokens` - The input tokens from the theme.
+    ///
+    /// # Returns
+    ///
+    /// The appropriate `Hsla` color for the input's text.
     fn text_color(&self, tokens: &InputTokens) -> Hsla {
         if self.props.disabled {
             tokens.text_disabled

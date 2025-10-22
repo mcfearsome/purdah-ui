@@ -190,6 +190,9 @@ pub struct GlobalTokens {
 }
 
 impl Default for GlobalTokens {
+    /// Returns the default set of global tokens.
+    ///
+    /// These values are pre-defined and form the foundation of the design system.
     fn default() -> Self {
         Self {
             // Blue scale (primary color)
@@ -395,7 +398,9 @@ impl AliasTokens {
         }
     }
 
-    /// Create light mode alias tokens
+    /// Create light mode alias tokens.
+    ///
+    /// Maps global tokens to their semantic equivalents for a light theme.
     fn light_mode(global: &GlobalTokens) -> Self {
         Self {
             // Primary colors (blue)
@@ -447,7 +452,9 @@ impl AliasTokens {
         }
     }
 
-    /// Create dark mode alias tokens
+    /// Create dark mode alias tokens.
+    ///
+    /// Maps global tokens to their semantic equivalents for a dark theme.
     fn dark_mode(global: &GlobalTokens) -> Self {
         Self {
             // Primary colors (lighter blue for dark mode)

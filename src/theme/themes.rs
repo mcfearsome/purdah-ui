@@ -157,6 +157,7 @@ impl Theme {
 }
 
 impl Default for Theme {
+    /// Returns the default theme, which is the light theme.
     fn default() -> Self {
         Self::light()
     }

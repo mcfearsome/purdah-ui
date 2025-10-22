@@ -22,8 +22,11 @@
 //! // Create a button
 //! Button::new()
 //!     .label("Click me")
-//!     .variant(ButtonVariant::Primary)
-//!     .on_click(|_, cx| { /* handler */ });
+//!     .variant(ButtonVariant::Primary);
+//!
+//! // Create an input
+//! Input::new()
+//!     .placeholder("Enter your name...");
 //! ```
 
 pub mod label;
