@@ -29,10 +29,10 @@
 //! ## Module Organization
 //!
 //! - [`theme`]: Design token system and theming
-//! - `atoms`: Primitive components (Button, Input, Icon, etc.) - *coming soon*
-//! - `molecules`: Composite components (SearchBar, FormGroup, etc.) - *coming soon*
-//! - `organisms`: Complex components (Dialog, Table, etc.) - *coming soon*
-//! - `layout`: Layout primitives (VStack, HStack, Grid, etc.) - *coming soon*
+//! - [`atoms`]: Primitive components (Button, Input, Icon, Badge, Avatar, Checkbox, Radio, Switch, Spinner)
+//! - [`molecules`]: Composite components (SearchBar, FormGroup, Card)
+//! - [`layout`]: Layout primitives (VStack, HStack, Spacer, Container, Divider)
+//! - [`organisms`]: Complex components (Dialog)
 //! - `utils`: Accessibility utilities and helpers - *coming soon*
 //! - [`prelude`]: Convenient re-exports for common imports
 
@@ -46,11 +46,11 @@
 
 pub mod theme;
 pub mod atoms;
+pub mod layout;
+pub mod molecules;
+pub mod organisms;
 
 // Component modules (to be implemented)
-// pub mod molecules;
-// pub mod organisms;
-// pub mod layout;
 // pub mod utils;
 
 pub mod prelude;

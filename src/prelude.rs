@@ -8,20 +8,44 @@
 
 // Re-export theme types
 pub use crate::theme::{
-    AliasTokens, ButtonTokens, GlobalTokens, InputTokens, LabelTokens, Theme, ThemeMode,
+    AliasTokens, AvatarTokens, BadgeTokens, ButtonTokens, CheckboxTokens, GlobalTokens,
+    IconTokens, InputTokens, LabelTokens, RadioTokens, SpinnerTokens, SwitchTokens,
+    Theme, ThemeMode,
 };
 
 // Re-export atom components
 pub use crate::atoms::{
-    Label, LabelVariant,
+    Avatar, AvatarProps, AvatarSize, AvatarStatus,
+    Badge, BadgeProps, BadgeVariant,
     Button, ButtonProps, ButtonSize, ButtonVariant,
+    Checkbox, CheckboxProps, CheckboxState,
+    Icon, IconColor, IconSize,
     Input, InputProps,
+    Label, LabelVariant,
+    Radio, RadioProps,
+    Spinner, SpinnerColor, SpinnerProps, SpinnerSize,
+    Switch, SwitchProps,
+};
+
+// Re-export layout components
+pub use crate::layout::{
+    Alignment, Container, Divider, DividerOrientation, HStack, Justify, Spacer, VStack,
+};
+
+// Re-export molecule components
+pub use crate::molecules::{
+    Card, CardProps, CardVariant,
+    FormGroup, FormGroupProps,
+    SearchBar, SearchBarProps,
+};
+
+// Re-export organism components
+pub use crate::organisms::{
+    Command, CommandPalette, CommandPaletteProps,
+    Dialog, DialogProps,
+    Drawer, DrawerPosition, DrawerProps,
+    Table, TableColumn, TableProps,
 };
 
 // Re-export GPUI core types for convenience
 pub use gpui::*;
-
-// Future component re-exports (to be added as components are implemented)
-// pub use crate::molecules::*;
-// pub use crate::organisms::*;
-// pub use crate::layout::*;
