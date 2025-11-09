@@ -956,4 +956,481 @@ impl IconTokens {
     }
 }
 
+/// Layer 3: Component-Specific Tokens - Badge
+///
+/// Badge-specific styling tokens derived from alias and global tokens.
+///
+/// ## Example
+///
+/// ```rust,no_run
+/// use purdah_gpui_components::theme::{Theme, BadgeTokens};
+///
+/// let theme = Theme::light();
+/// let tokens = BadgeTokens::from_theme(&theme);
+/// let bg_color = tokens.background_primary;
+/// ```
+#[derive(Debug, Clone)]
+pub struct BadgeTokens {
+    // Background colors for variants
+    /// Default badge background
+    pub background_default: Hsla,
+    /// Primary badge background
+    pub background_primary: Hsla,
+    /// Success badge background
+    pub background_success: Hsla,
+    /// Warning badge background
+    pub background_warning: Hsla,
+    /// Danger badge background
+    pub background_danger: Hsla,
+    /// Premium badge background
+    pub background_premium: Hsla,
 
+    // Text colors for variants
+    /// Default badge text color
+    pub text_default: Hsla,
+    /// Primary badge text color
+    pub text_primary: Hsla,
+    /// Success badge text color
+    pub text_success: Hsla,
+    /// Warning badge text color
+    pub text_warning: Hsla,
+    /// Danger badge text color
+    pub text_danger: Hsla,
+    /// Premium badge text color
+    pub text_premium: Hsla,
+
+    // Dot colors for variants
+    /// Default status dot color
+    pub dot_default: Hsla,
+    /// Primary status dot color
+    pub dot_primary: Hsla,
+    /// Success status dot color
+    pub dot_success: Hsla,
+    /// Warning status dot color
+    pub dot_warning: Hsla,
+    /// Danger status dot color
+    pub dot_danger: Hsla,
+    /// Premium status dot color
+    pub dot_premium: Hsla,
+
+    // Layout & spacing
+    /// Horizontal padding
+    pub padding_x: Pixels,
+    /// Vertical padding
+    pub padding_y: Pixels,
+    /// Gap between dot and text
+    pub gap: Pixels,
+
+    // Typography
+    /// Badge font size
+    pub font_size: Pixels,
+    /// Badge font weight
+    pub font_weight: u16,
+
+    // Border & radius
+    /// Border radius
+    pub border_radius: Pixels,
+
+    // Dot size
+    /// Status dot size
+    pub dot_size: Pixels,
+}
+
+impl BadgeTokens {
+    /// Create badge tokens from a theme
+    ///
+    /// ## Example
+    ///
+    /// ```rust,no_run
+    /// use purdah_gpui_components::theme::{Theme, BadgeTokens};
+    ///
+    /// let theme = Theme::light();
+    /// let tokens = BadgeTokens::from_theme(&theme);
+    /// ```
+    pub fn from_theme(theme: &super::Theme) -> Self {
+        Self {
+            // Background colors - light backgrounds with semantic colors
+            background_default: if theme.is_dark() {
+                theme.global.gray_800
+            } else {
+                theme.global.gray_100
+            },
+            background_primary: if theme.is_dark() {
+                theme.global.blue_900
+            } else {
+                theme.global.blue_100
+            },
+            background_success: if theme.is_dark() {
+                theme.global.green_900
+            } else {
+                theme.global.green_100
+            },
+            background_warning: if theme.is_dark() {
+                theme.global.yellow_900
+            } else {
+                theme.global.yellow_100
+            },
+            background_danger: if theme.is_dark() {
+                theme.global.red_900
+            } else {
+                theme.global.red_100
+            },
+            background_premium: if theme.is_dark() {
+                hsla(270.0 / 360.0, 0.50, 0.20, 1.0) // Dark purple
+            } else {
+                hsla(270.0 / 360.0, 0.70, 0.95, 1.0) // Light purple
+            },
+
+            // Text colors - darker text on light backgrounds
+            text_default: theme.alias.color_text_primary,
+            text_primary: if theme.is_dark() {
+                theme.global.blue_300
+            } else {
+                theme.global.blue_700
+            },
+            text_success: if theme.is_dark() {
+                theme.global.green_300
+            } else {
+                theme.global.green_700
+            },
+            text_warning: if theme.is_dark() {
+                theme.global.yellow_300
+            } else {
+                theme.global.yellow_700
+            },
+            text_danger: if theme.is_dark() {
+                theme.global.red_300
+            } else {
+                theme.global.red_700
+            },
+            text_premium: if theme.is_dark() {
+                hsla(270.0 / 360.0, 0.70, 0.70, 1.0) // Light purple
+            } else {
+                hsla(270.0 / 360.0, 0.60, 0.40, 1.0) // Dark purple
+            },
+
+            // Dot colors - vibrant semantic colors
+            dot_default: theme.alias.color_text_muted,
+            dot_primary: theme.alias.color_primary,
+            dot_success: theme.alias.color_success,
+            dot_warning: theme.alias.color_warning,
+            dot_danger: theme.alias.color_danger,
+            dot_premium: if theme.is_dark() {
+                hsla(270.0 / 360.0, 0.80, 0.60, 1.0)
+            } else {
+                hsla(270.0 / 360.0, 0.70, 0.50, 1.0)
+            },
+
+            // Layout - compact sizing for inline badges
+            padding_x: theme.global.spacing_sm,
+            padding_y: px(2.0), // Minimal vertical padding
+            gap: px(4.0), // Small gap between dot and text
+
+            // Typography - smaller text for compact appearance
+            font_size: theme.global.font_size_xs,
+            font_weight: theme.global.font_weight_medium,
+
+            // Border - pill-shaped badges
+            border_radius: theme.global.radius_full,
+
+            // Dot size
+            dot_size: px(6.0),
+        }
+    }
+}
+
+
+
+/// Layer 3: Component-Specific Tokens - Avatar
+///
+/// Avatar-specific styling tokens derived from alias and global tokens.
+///
+/// ## Example
+///
+/// ```rust,no_run
+/// use purdah_gpui_components::theme::{Theme, AvatarTokens};
+///
+/// let theme = Theme::light();
+/// let tokens = AvatarTokens::from_theme(&theme);
+/// let size = tokens.size_md;
+/// ```
+#[derive(Debug, Clone)]
+pub struct AvatarTokens {
+    // Sizes
+    /// Extra small avatar size (24px)
+    pub size_xs: Pixels,
+    /// Small avatar size (32px)
+    pub size_sm: Pixels,
+    /// Medium avatar size (40px)
+    pub size_md: Pixels,
+    /// Large avatar size (48px)
+    pub size_lg: Pixels,
+    /// Extra large avatar size (64px)
+    pub size_xl: Pixels,
+
+    // Typography - Font sizes for initials
+    /// Font size for xs avatar
+    pub font_size_xs: Pixels,
+    /// Font size for sm avatar
+    pub font_size_sm: Pixels,
+    /// Font size for md avatar
+    pub font_size_md: Pixels,
+    /// Font size for lg avatar
+    pub font_size_lg: Pixels,
+    /// Font size for xl avatar
+    pub font_size_xl: Pixels,
+    /// Font weight for initials
+    pub font_weight: u16,
+
+    // Colors
+    /// Default background color for initials
+    pub background_default: Hsla,
+    /// Text color for initials
+    pub text_color: Hsla,
+
+    // Status indicator colors
+    /// Online status color (green)
+    pub status_online: Hsla,
+    /// Offline status color (gray)
+    pub status_offline: Hsla,
+    /// Away status color (yellow)
+    pub status_away: Hsla,
+    /// Busy status color (red)
+    pub status_busy: Hsla,
+
+    // Status indicator sizes
+    /// Status indicator size for xs avatar
+    pub status_size_xs: Pixels,
+    /// Status indicator size for sm avatar
+    pub status_size_sm: Pixels,
+    /// Status indicator size for md avatar
+    pub status_size_md: Pixels,
+    /// Status indicator size for lg avatar
+    pub status_size_lg: Pixels,
+    /// Status indicator size for xl avatar
+    pub status_size_xl: Pixels,
+
+    // Status indicator border
+    /// Status indicator border color (matches surface)
+    pub status_border: Hsla,
+    /// Status indicator border width
+    pub status_border_width: Pixels,
+}
+
+impl AvatarTokens {
+    /// Create avatar tokens from a theme
+    ///
+    /// ## Example
+    ///
+    /// ```rust,no_run
+    /// use purdah_gpui_components::theme::{Theme, AvatarTokens};
+    ///
+    /// let theme = Theme::light();
+    /// let tokens = AvatarTokens::from_theme(&theme);
+    /// ```
+    pub fn from_theme(theme: &super::Theme) -> Self {
+        Self {
+            // Sizes - standard avatar sizes
+            size_xs: px(24.0),
+            size_sm: px(32.0),
+            size_md: px(40.0),
+            size_lg: px(48.0),
+            size_xl: px(64.0),
+
+            // Font sizes - scaled to avatar sizes
+            font_size_xs: theme.global.font_size_xs,
+            font_size_sm: theme.global.font_size_sm,
+            font_size_md: theme.global.font_size_base,
+            font_size_lg: theme.global.font_size_lg,
+            font_size_xl: theme.global.font_size_xl,
+            font_weight: theme.global.font_weight_semibold,
+
+            // Colors
+            background_default: theme.alias.color_secondary,
+            text_color: theme.alias.color_text_on_primary,
+
+            // Status colors - semantic colors
+            status_online: theme.alias.color_success,
+            status_offline: theme.alias.color_text_muted,
+            status_away: theme.alias.color_warning,
+            status_busy: theme.alias.color_danger,
+
+            // Status indicator sizes - proportional to avatar
+            status_size_xs: px(6.0),
+            status_size_sm: px(8.0),
+            status_size_md: px(10.0),
+            status_size_lg: px(12.0),
+            status_size_xl: px(16.0),
+
+            // Status border - matches surface for visual separation
+            status_border: theme.alias.color_surface,
+            status_border_width: px(2.0),
+        }
+    }
+}
+
+/// Layer 3: Component-Specific Tokens - Checkbox
+#[derive(Debug, Clone)]
+pub struct CheckboxTokens {
+    pub size: Pixels,
+    pub background_unchecked: Hsla,
+    pub background_checked: Hsla,
+    pub background_disabled: Hsla,
+    pub border_unchecked: Hsla,
+    pub border_checked: Hsla,
+    pub border_disabled: Hsla,
+    pub border_width: Pixels,
+    pub border_radius: Pixels,
+    pub icon_color: Hsla,
+    pub icon_size: Pixels,
+    pub label_gap: Pixels,
+    pub label_font_size: Pixels,
+    pub label_color: Hsla,
+    pub label_color_disabled: Hsla,
+}
+
+impl CheckboxTokens {
+    pub fn from_theme(theme: &super::Theme) -> Self {
+        Self {
+            size: px(20.0),
+            background_unchecked: theme.alias.color_surface,
+            background_checked: theme.alias.color_primary,
+            background_disabled: if theme.is_dark() {
+                theme.global.gray_800
+            } else {
+                theme.global.gray_100
+            },
+            border_unchecked: theme.alias.color_border,
+            border_checked: theme.alias.color_primary,
+            border_disabled: theme.global.gray_300,
+            border_width: px(1.0),
+            border_radius: theme.global.radius_sm,
+            icon_color: theme.alias.color_text_on_primary,
+            icon_size: px(14.0),
+            label_gap: theme.global.spacing_sm,
+            label_font_size: theme.alias.font_size_body,
+            label_color: theme.alias.color_text_primary,
+            label_color_disabled: theme.alias.color_text_muted,
+        }
+    }
+}
+
+/// Layer 3: Component-Specific Tokens - Radio
+#[derive(Debug, Clone)]
+pub struct RadioTokens {
+    pub size: Pixels,
+    pub background_unselected: Hsla,
+    pub background_selected: Hsla,
+    pub background_disabled: Hsla,
+    pub border_unselected: Hsla,
+    pub border_selected: Hsla,
+    pub border_disabled: Hsla,
+    pub border_width: Pixels,
+    pub dot_size: Pixels,
+    pub dot_color: Hsla,
+    pub label_gap: Pixels,
+    pub label_font_size: Pixels,
+    pub label_color: Hsla,
+    pub label_color_disabled: Hsla,
+}
+
+impl RadioTokens {
+    pub fn from_theme(theme: &super::Theme) -> Self {
+        Self {
+            size: px(20.0),
+            background_unselected: theme.alias.color_surface,
+            background_selected: theme.alias.color_surface,
+            background_disabled: if theme.is_dark() {
+                theme.global.gray_800
+            } else {
+                theme.global.gray_100
+            },
+            border_unselected: theme.alias.color_border,
+            border_selected: theme.alias.color_primary,
+            border_disabled: theme.global.gray_300,
+            border_width: px(1.0),
+            dot_size: px(10.0),
+            dot_color: theme.alias.color_primary,
+            label_gap: theme.global.spacing_sm,
+            label_font_size: theme.alias.font_size_body,
+            label_color: theme.alias.color_text_primary,
+            label_color_disabled: theme.alias.color_text_muted,
+        }
+    }
+}
+
+/// Layer 3: Component-Specific Tokens - Switch
+#[derive(Debug, Clone)]
+pub struct SwitchTokens {
+    pub width: Pixels,
+    pub height: Pixels,
+    pub background_off: Hsla,
+    pub background_on: Hsla,
+    pub background_disabled: Hsla,
+    pub thumb_size: Pixels,
+    pub thumb_color: Hsla,
+    pub thumb_disabled: Hsla,
+    pub thumb_padding: Pixels,
+    pub label_gap: Pixels,
+    pub label_font_size: Pixels,
+    pub label_color: Hsla,
+    pub label_color_disabled: Hsla,
+}
+
+impl SwitchTokens {
+    pub fn from_theme(theme: &super::Theme) -> Self {
+        Self {
+            width: px(44.0),
+            height: px(24.0),
+            background_off: if theme.is_dark() {
+                theme.global.gray_700
+            } else {
+                theme.global.gray_300
+            },
+            background_on: theme.alias.color_primary,
+            background_disabled: if theme.is_dark() {
+                theme.global.gray_800
+            } else {
+                theme.global.gray_200
+            },
+            thumb_size: px(20.0),
+            thumb_color: hsla(0.0, 0.0, 1.0, 1.0), // White
+            thumb_disabled: theme.global.gray_300,
+            thumb_padding: px(2.0),
+            label_gap: theme.global.spacing_sm,
+            label_font_size: theme.alias.font_size_body,
+            label_color: theme.alias.color_text_primary,
+            label_color_disabled: theme.alias.color_text_muted,
+        }
+    }
+}
+
+/// Layer 3: Component-Specific Tokens - Spinner
+#[derive(Debug, Clone)]
+pub struct SpinnerTokens {
+    pub size_sm: Pixels,
+    pub size_md: Pixels,
+    pub size_lg: Pixels,
+    pub border_width: Pixels,
+    pub color_default: Hsla,
+    pub color_muted: Hsla,
+    pub color_success: Hsla,
+    pub color_warning: Hsla,
+    pub color_danger: Hsla,
+}
+
+impl SpinnerTokens {
+    pub fn from_theme(theme: &super::Theme) -> Self {
+        Self {
+            size_sm: px(16.0),
+            size_md: px(24.0),
+            size_lg: px(32.0),
+            border_width: px(2.0),
+            color_default: theme.alias.color_primary,
+            color_muted: theme.alias.color_text_muted,
+            color_success: theme.alias.color_success,
+            color_warning: theme.alias.color_warning,
+            color_danger: theme.alias.color_danger,
+        }
+    }
+}

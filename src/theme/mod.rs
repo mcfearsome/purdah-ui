@@ -23,5 +23,8 @@
 mod tokens;
 mod themes;
 
-pub use tokens::{AliasTokens, ButtonTokens, GlobalTokens, IconTokens, InputTokens, LabelTokens};
+pub use tokens::{
+    AliasTokens, AvatarTokens, BadgeTokens, ButtonTokens, CheckboxTokens, GlobalTokens,
+    IconTokens, InputTokens, LabelTokens, RadioTokens, SpinnerTokens, SwitchTokens
+};
 pub use themes::{Theme, ThemeMode};
