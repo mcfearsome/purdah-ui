@@ -7,6 +7,10 @@
 //! - [`SearchBar`]: Search input with icon and clear button
 //! - [`FormGroup`]: Label + Input + Error message combination
 //! - [`Card`]: Content card container with variants
+//! - [`TabGroup`]: Tabbed navigation with keyboard support
+//! - [`Dropdown`]: Select menu with search and multi-select support
+//! - [`Tooltip`]: Contextual information on hover/focus
+//! - [`Popover`]: Click-triggered overlay with rich content
 //!
 //! ## Example
 //!
@@ -33,7 +37,15 @@
 pub mod search_bar;
 pub mod form_group;
 pub mod card;
+pub mod tab_group;
+pub mod dropdown;
+pub mod tooltip;
+pub mod popover;
 
 pub use search_bar::{SearchBar, SearchBarProps};
 pub use form_group::{FormGroup, FormGroupProps};
 pub use card::{Card, CardProps, CardVariant};
+pub use tab_group::{TabGroup, TabGroupProps, TabGroupVariant, Tab};
+pub use dropdown::{Dropdown, DropdownProps, DropdownVariant, DropdownOption};
+pub use tooltip::{Tooltip, TooltipProps, TooltipPosition};
+pub use popover::{Popover, PopoverProps, PopoverPosition};

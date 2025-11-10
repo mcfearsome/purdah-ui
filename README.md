@@ -43,33 +43,34 @@ fn main() {
 
 ## 📚 Documentation
 
-- [Getting Started](docs/getting-started.md) (coming soon)
-- [Theme System](docs/theming.md) (coming soon)
+- [Getting Started](docs/getting-started.md)
+- [Theme System](docs/theming.md)
 - [API Reference](https://docs.rs/purdah-gpui-components) (coming soon)
 
 ## 🎯 Roadmap
 
-### Phase 1: Foundation ✅ (Current)
+### Phase 1: Foundation ✅ (Complete)
 - [x] Design token system
 - [x] Theme system (light/dark modes)
-- [ ] Icon system (Lucide integration)
-- [ ] Core atoms (Button, Input, Label)
+- [x] Icon system (Lucide integration)
+- [x] Core atoms (Button, Input, Label)
 
-### Phase 2: Core Components
-- [ ] Remaining atoms (Badge, Avatar, Checkbox, Radio, Switch)
-- [ ] Core molecules (SearchBar, FormGroup, TabGroup, Dropdown)
-- [ ] Accessibility utilities (FocusTrap, Announcer)
+### Phase 2: Core Components ✅ (Complete)
+- [x] Remaining atoms (Badge, Avatar, Checkbox, Radio, Switch, Spinner)
+- [x] Core molecules (SearchBar, FormGroup, Card)
+- [x] Additional molecules (TabGroup, Dropdown, Tooltip, Popover)
+- [x] Accessibility utilities (FocusTrap, Announcer)
 
-### Phase 3: Advanced Components
-- [ ] Complex molecules (Tooltip, Popover, Card)
-- [ ] Organisms (Dialog, Drawer, Table, CommandPalette)
-- [ ] Layout components (VStack, HStack, Grid, Container)
+### Phase 3: Advanced Components ✅ (Complete)
+- [x] Complex molecules (Tooltip, Popover)
+- [x] Organisms (Dialog, Drawer, Table, CommandPalette)
+- [x] Layout components (VStack, HStack, Spacer, Container, Divider)
 
-### Phase 4: Polish & Documentation
-- [ ] Component showcase application
-- [ ] Comprehensive documentation
-- [ ] Example applications
-- [ ] Performance optimization
+### Phase 4: Polish & Documentation ✅ (Complete)
+- [x] Component showcase application
+- [x] Comprehensive documentation (Getting Started, Theming guides)
+- [x] Example applications (Showcase, Form Demo, Dashboard)
+- [x] Performance optimization (Ongoing)
 
 ## 🤝 Contributing
 
