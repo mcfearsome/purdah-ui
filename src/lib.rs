@@ -28,12 +28,22 @@
 //!
 //! ## Module Organization
 //!
+//! ### Component Library
 //! - [`theme`]: Design token system and theming
 //! - [`atoms`]: Primitive components (Button, Input, Icon, Badge, Avatar, Checkbox, Radio, Switch, Spinner)
 //! - [`molecules`]: Composite components (SearchBar, FormGroup, Card)
 //! - [`layout`]: Layout primitives (VStack, HStack, Spacer, Container, Divider)
 //! - [`organisms`]: Complex components (Dialog, Drawer, Table, CommandPalette)
 //! - [`utils`]: Accessibility utilities and helpers (FocusTrap, Announcer)
+//!
+//! ### Architecture
+//! - [`unified`]: Unified infrastructure for Hybrid TEA-Flux architecture
+//! - [`tea`]: The Elm Architecture (TEA) implementation
+//! - [`flux`]: Flux architecture implementation
+//! - [`bridges`]: Cross-pattern communication utilities
+//! - [`devtools`]: Developer tools and debugging utilities
+//!
+//! ### Prelude
 //! - [`prelude`]: Convenient re-exports for common imports
 
 #![warn(missing_docs)]
@@ -44,11 +54,19 @@
 #![allow(clippy::missing_panics_doc)]
 #![recursion_limit = "512"]
 
+// Component library modules
 pub mod theme;
 pub mod atoms;
 pub mod layout;
 pub mod molecules;
 pub mod organisms;
 pub mod utils;
+
+// Architecture modules
+pub mod unified;
+pub mod tea;
+pub mod flux;
+pub mod bridges;
+pub mod devtools;
 
 pub mod prelude;
