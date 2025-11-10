@@ -32,8 +32,8 @@
 //! - [`atoms`]: Primitive components (Button, Input, Icon, Badge, Avatar, Checkbox, Radio, Switch, Spinner)
 //! - [`molecules`]: Composite components (SearchBar, FormGroup, Card)
 //! - [`layout`]: Layout primitives (VStack, HStack, Spacer, Container, Divider)
-//! - [`organisms`]: Complex components (Dialog)
-//! - `utils`: Accessibility utilities and helpers - *coming soon*
+//! - [`organisms`]: Complex components (Dialog, Drawer, Table, CommandPalette)
+//! - [`utils`]: Accessibility utilities and helpers (FocusTrap, Announcer)
 //! - [`prelude`]: Convenient re-exports for common imports
 
 #![warn(missing_docs)]
@@ -49,8 +49,6 @@ pub mod atoms;
 pub mod layout;
 pub mod molecules;
 pub mod organisms;
-
-// Component modules (to be implemented)
-// pub mod utils;
+pub mod utils;
 
 pub mod prelude;

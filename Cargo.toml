@@ -20,10 +20,17 @@ gpui = { git = "https://github.com/zed-industries/zed" }
 name = "purdah_gpui_components"
 path = "src/lib.rs"
 
-# Examples will be added as components are implemented
-# [[example]]
-# name = "showcase"
-# path = "examples/showcase.rs"
+[[example]]
+name = "showcase"
+path = "examples/showcase.rs"
+
+[[example]]
+name = "form_demo"
+path = "examples/form_demo.rs"
+
+[[example]]
+name = "dashboard"
+path = "examples/dashboard.rs"
 
 [profile.dev]
 opt-level = 1
