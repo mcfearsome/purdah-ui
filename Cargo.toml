@@ -43,6 +43,10 @@ path = "examples/dashboard.rs"
 name = "webview_demo"
 path = "examples/webview_demo.rs"
 
+[[example]]
+name = "chat_forks_3d"
+path = "examples/chat_forks_3d.rs"
+
 [profile.dev]
 opt-level = 1
 

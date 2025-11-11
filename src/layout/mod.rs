@@ -6,6 +6,7 @@
 //!
 //! - [`VStack`]: Vertical stack layout
 //! - [`HStack`]: Horizontal stack layout
+//! - [`ZStack`]: Depth-based 3D stack layout for UX forks
 //! - [`Spacer`]: Flexible spacing component
 //! - [`Container`]: Max-width container with centering
 //! - [`Divider`]: Horizontal or vertical divider line
@@ -37,8 +38,10 @@ pub mod stack;
 pub mod spacer;
 pub mod container;
 pub mod divider;
+pub mod zstack;
 
 pub use stack::{HStack, VStack, Alignment, Justify};
 pub use spacer::Spacer;
 pub use container::Container;
 pub use divider::{Divider, DividerOrientation};
+pub use zstack::{ZStack, ZChild, ZStackConfig, ZDepth, DepthSlider, Orientation};
