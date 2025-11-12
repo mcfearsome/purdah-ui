@@ -9,6 +9,7 @@
 //! - [`Drawer`]: Side panel drawer with slide-in animation
 //! - [`Table`]: Data table with sortable columns
 //! - [`CommandPalette`]: Searchable command interface
+//! - [`WebView`]: Embedded web content with cookie and session persistence
 //!
 //! ## Example
 //!
@@ -43,8 +44,10 @@ pub mod dialog;
 pub mod drawer;
 pub mod table;
 pub mod command_palette;
+pub mod webview;
 
 pub use dialog::{Dialog, DialogProps};
 pub use drawer::{Drawer, DrawerPosition, DrawerProps};
 pub use table::{Table, TableColumn, TableProps};
 pub use command_palette::{Command, CommandPalette, CommandPaletteProps};
+pub use webview::{WebView, WebViewProps, WebViewSession, SessionManager, Cookie};
