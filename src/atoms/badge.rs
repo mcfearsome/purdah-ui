@@ -190,6 +190,49 @@ impl Render for Badge {
     }
 }
 
+impl IntoElement for Badge {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        // Get theme and tokens
+        let theme = Theme::default();
+        let tokens = BadgeTokens::from_theme(&theme);
+
+        // Calculate styling
+        let bg_color = self.background_color(&tokens);
+        let text_color = self.text_color(&tokens);
+
+        // Build badge container
+        let mut badge = div()
+            .flex()
+            .flex_row()
+            .items_center()
+            .gap(tokens.gap)
+            .px(tokens.padding_x)
+            .py(tokens.padding_y)
+            .bg(bg_color)
+            .text_color(text_color)
+            .text_size(tokens.font_size)
+            .font_weight(FontWeight(tokens.font_weight as f32))
+            .rounded(tokens.border_radius);
+
+        // Add status dot if enabled
+        if self.props.dot {
+            let dot_color = self.dot_color(&tokens);
+            badge = badge.child(
+                div()
+                    .w(tokens.dot_size)
+                    .h(tokens.dot_size)
+                    .bg(dot_color)
+                    .rounded(tokens.dot_size) // Fully rounded for circle
+            );
+        }
+
+        // Add text
+        badge.child(self.props.text.clone())
+    }
+}
+
 // NOTE: Unit tests temporarily removed due to GPUI procedural macro incompatibility with #[test]
 // The macro causes infinite recursion during test compilation (SIGBUS error).
 // Tests can be re-added once GPUI's macro system is updated, or moved to integration tests.

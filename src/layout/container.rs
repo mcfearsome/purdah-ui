@@ -97,3 +97,11 @@ impl Container {
         element
     }
 }
+
+impl IntoElement for Container {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        self.to_element()
+    }
+}

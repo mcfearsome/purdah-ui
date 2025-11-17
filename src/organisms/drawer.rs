@@ -92,7 +92,71 @@ impl Render for Drawer {
         }
 
         div()
-            .fixed()
+            .absolute()
+            .top(px(0.0))
+            .left(px(0.0))
+            .w_full()
+            .h_full()
+            .flex()
+            .flex_row()
+            .child(
+                // Overlay
+                div()
+                    .flex_1()
+                    .bg(hsla(0.0, 0.0, 0.0, 0.5))
+            )
+            .child(
+                // Drawer panel
+                div()
+                    .w(self.props.width)
+                    .h_full()
+                    .bg(theme.alias.color_surface)
+                    .shadow_xl()
+                    .flex()
+                    .flex_col()
+                    .child(
+                        // Header
+                        div()
+                            .flex()
+                            .flex_row()
+                            .items_center()
+                            .justify_between()
+                            .p(theme.global.spacing_lg)
+                            .border_color(theme.alias.color_border)
+                            .border_b(px(1.0))
+                            .child(
+                                Label::new(self.props.title.clone())
+                                    .variant(LabelVariant::Heading2)
+                            )
+                            .child(
+                                Button::new()
+                                    .label("✕")
+                                    .variant(ButtonVariant::Ghost)
+                            )
+                    )
+                    .child(
+                        // Content area
+                        div()
+                            .flex_1()
+                            .p(theme.global.spacing_lg)
+                            .child("Drawer content goes here")
+                    )
+            )
+    }
+}
+
+impl IntoElement for Drawer {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        let theme = Theme::default();
+
+        if !self.props.open {
+            return div(); // Return empty div if not open
+        }
+
+        div()
+            .absolute()
             .top(px(0.0))
             .left(px(0.0))
             .w_full()

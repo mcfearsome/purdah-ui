@@ -264,6 +264,51 @@ impl Render for Button {
     }
 }
 
+impl IntoElement for Button {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        // Get theme and tokens
+        let theme = Theme::default();
+        let tokens = ButtonTokens::from_theme(&theme);
+
+        // Calculate styling
+        let bg_color = self.background_color(&tokens);
+        let text_color = self.text_color(&tokens);
+        let (padding_x, padding_y) = self.padding(&tokens);
+        let font_size = self.font_size(&tokens);
+        let border = self.border_style(&tokens);
+
+        // Build button element
+        let mut button = div()
+            .flex()
+            .flex_row()
+            .items_center()
+            .justify_center()
+            .gap(tokens.gap)
+            .px(padding_x)
+            .py(padding_y)
+            .bg(bg_color)
+            .text_color(text_color)
+            .text_size(font_size)
+            .font_weight(FontWeight(tokens.font_weight as f32))
+            .rounded(tokens.border_radius);
+
+        // Add border for outline variant
+        if let Some((width, color)) = border {
+            button = button.border_color(color).border(width);
+        }
+
+        // Handle disabled state
+        if self.props.disabled {
+            button = button.opacity(0.5);
+        }
+
+        // Add label
+        button.child(self.props.label.clone())
+    }
+}
+
 // NOTE: Unit tests temporarily removed due to GPUI procedural macro incompatibility with #[test]
 // The macro causes infinite recursion during test compilation (SIGBUS error).
 // Tests can be re-added once GPUI's macro system is updated, or moved to integration tests.

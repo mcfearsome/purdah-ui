@@ -198,3 +198,53 @@ impl Render for FormGroup {
             })
     }
 }
+
+impl IntoElement for FormGroup {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        let theme = Theme::default();
+        let has_error = self.props.error_message.is_some();
+
+        // Build form group container
+        div()
+            .flex()
+            .flex_col()
+            .gap(theme.global.spacing_xs)
+            .child(
+                // Label with optional required indicator
+                div()
+                    .flex()
+                    .flex_row()
+                    .gap(px(4.0))
+                    .child(
+                        Label::new(self.props.label.clone())
+                            .variant(LabelVariant::Body)
+                    )
+                    .when(self.props.required, |div| {
+                        div.child(
+                            Label::new("*")
+                                .variant(LabelVariant::Body)
+                                .color(theme.alias.color_danger)
+                        )
+                    })
+            )
+            .child(
+                // Input field
+                Input::new()
+                    .value(self.props.value.clone())
+                    .placeholder(self.props.placeholder.clone())
+                    .error(has_error)
+                    .when_some(self.props.error_message.clone(), |input, msg| {
+                        input.error_message(msg)
+                    })
+            )
+            .when_some(self.props.helper_text.clone(), |div, text| {
+                div.child(
+                    Label::new(text)
+                        .variant(LabelVariant::Caption)
+                        .color(theme.alias.color_text_muted)
+                )
+            })
+    }
+}

@@ -159,6 +159,30 @@ impl Render for Spinner {
     }
 }
 
+impl IntoElement for Spinner {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        // Get theme and tokens
+        let theme = Theme::default();
+        let tokens = SpinnerTokens::from_theme(&theme);
+
+        let size = self.spinner_size(&tokens);
+        let color = self.spinner_color(&tokens);
+
+        // Build spinner as a circular border with animated rotation
+        // Note: Animation would be handled by GPUI's animation system
+        // For now, we'll create a static circular loader
+        div()
+            .size(size)
+            .border_color(color)
+            .border(tokens.border_width)
+            .rounded(size) // Fully rounded for circle
+            // TODO: Add GPUI animation for rotation
+            // This would typically use cx.animate() or similar GPUI animation APIs
+    }
+}
+
 // NOTE: Unit tests temporarily removed due to GPUI procedural macro incompatibility with #[test]
 // The macro causes infinite recursion during test compilation (SIGBUS error).
 // Tests can be re-added once GPUI's macro system is updated, or moved to integration tests.

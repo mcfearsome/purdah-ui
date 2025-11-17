@@ -306,6 +306,115 @@ impl Render for TabGroup {
     }
 }
 
+impl IntoElement for TabGroup {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        let theme = Theme::default();
+
+        // Build tab list container
+        let mut container = div()
+            .flex()
+            .flex_row()
+            .gap(theme.global.spacing_xs);
+
+        // Apply variant-specific container styling
+        container = match self.props.variant {
+            TabGroupVariant::Line => container
+                .border_b(px(1.0))
+                .border_color(theme.alias.color_border),
+            TabGroupVariant::Boxed => container,
+            TabGroupVariant::Segmented => container
+                .bg(theme.alias.color_background_subtle)
+                .rounded(theme.global.radius_md)
+                .p(px(4.0)),
+        };
+
+        // Add tabs
+        for tab in &self.props.tabs {
+            let is_selected = tab.value == self.props.selected;
+
+            let mut tab_button = div()
+                .px(theme.global.spacing_md)
+                .py(theme.global.spacing_sm)
+                .cursor_pointer()
+                .flex()
+                .items_center()
+                .justify_center();
+
+            // Apply full width if specified
+            if self.props.full_width {
+                tab_button = tab_button.flex_1();
+            }
+
+            // Apply variant-specific tab styling
+            tab_button = match self.props.variant {
+                TabGroupVariant::Line => {
+                    if is_selected {
+                        tab_button
+                            .border_b(px(2.0))
+                            .border_color(theme.alias.color_primary)
+                            .text_color(theme.alias.color_primary)
+                    } else {
+                        tab_button
+                            .text_color(theme.alias.color_text_secondary)
+                            .hover(|style| {
+                                style.text_color(theme.alias.color_text_primary)
+                            })
+                    }
+                }
+                TabGroupVariant::Boxed => {
+                    if is_selected {
+                        tab_button
+                            .bg(theme.alias.color_primary)
+                            .text_color(hsla(0.0, 0.0, 1.0, 1.0)) // white
+                            .rounded(theme.global.radius_md)
+                    } else {
+                        tab_button
+                            .bg(theme.alias.color_background_subtle)
+                            .text_color(theme.alias.color_text_secondary)
+                            .rounded(theme.global.radius_md)
+                            .hover(|style| {
+                                style.bg(theme.alias.color_background_hover)
+                            })
+                    }
+                }
+                TabGroupVariant::Segmented => {
+                    if is_selected {
+                        tab_button
+                            .bg(theme.alias.color_surface)
+                            .text_color(theme.alias.color_text_primary)
+                            .rounded(theme.global.radius_sm)
+                            .shadow_sm()
+                    } else {
+                        tab_button
+                            .text_color(theme.alias.color_text_secondary)
+                            .hover(|style| {
+                                style.text_color(theme.alias.color_text_primary)
+                            })
+                    }
+                }
+            };
+
+            // Apply disabled state
+            if tab.disabled {
+                tab_button = tab_button
+                    .cursor_not_allowed()
+                    .opacity(0.5);
+            }
+
+            tab_button = tab_button.child(
+                Label::new(tab.label.clone())
+                    .variant(LabelVariant::Body)
+            );
+
+            container = container.child(tab_button);
+        }
+
+        container
+    }
+}
+
 impl Default for TabGroup {
     fn default() -> Self {
         Self::new()

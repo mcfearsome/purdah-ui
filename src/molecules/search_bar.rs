@@ -115,7 +115,42 @@ impl Render for SearchBar {
                     .absolute()
                     .left(theme.global.spacing_sm)
                     .child(
-                        Icon::new("M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z".into()) // Search icon path
+                        Icon::new("M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z") // Search icon path
+                            .size(IconSize::Sm)
+                            .color(IconColor::Muted)
+                    )
+            )
+            .child(
+                // Input field with left padding for icon
+                div()
+                    .pl(theme.global.spacing_2xl) // Space for search icon
+                    .child(
+                        Input::new()
+                            .value(self.props.value.clone())
+                            .placeholder(self.props.placeholder.clone())
+                    )
+            )
+    }
+}
+
+impl IntoElement for SearchBar {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        let theme = Theme::default();
+
+        // Build search bar container
+        div()
+            .relative()
+            .flex()
+            .items_center()
+            .child(
+                // Search icon on the left
+                div()
+                    .absolute()
+                    .left(theme.global.spacing_sm)
+                    .child(
+                        Icon::new("M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z") // Search icon path
                             .size(IconSize::Sm)
                             .color(IconColor::Muted)
                     )

@@ -88,7 +88,7 @@ impl Render for CommandPalette {
         }
 
         div()
-            .fixed()
+            .absolute()
             .top(px(0.0))
             .left(px(0.0))
             .w_full()
@@ -122,7 +122,79 @@ impl Render for CommandPalette {
                         // Commands list
                         div()
                             .max_h(px(400.0))
-                            .overflow_y_scroll()
+                            .children(
+                                self.props.commands.iter().map(|cmd| {
+                                    div()
+                                        .p(theme.global.spacing_sm)
+                                        .flex()
+                                        .flex_col()
+                                        .gap(px(2.0))
+                                        .hover(|style| {
+                                            style.bg(theme.alias.color_surface_hover)
+                                        })
+                                        .child(
+                                            Label::new(cmd.label.clone())
+                                                .variant(LabelVariant::Body)
+                                        )
+                                        .when_some(cmd.description.clone(), |div, desc| {
+                                            div.child(
+                                                Label::new(desc)
+                                                    .variant(LabelVariant::Caption)
+                                                    .color(theme.alias.color_text_muted)
+                                            )
+                                        })
+                                }).collect::<Vec<_>>()
+                            )
+                    )
+            )
+    }
+}
+
+impl IntoElement for CommandPalette {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        let theme = Theme::default();
+
+        if !self.props.open {
+            return div(); // Return empty div if not open
+        }
+
+        div()
+            .absolute()
+            .top(px(0.0))
+            .left(px(0.0))
+            .w_full()
+            .h_full()
+            .flex()
+            .items_start()
+            .justify_center()
+            .pt(px(100.0))
+            .bg(hsla(0.0, 0.0, 0.0, 0.5))
+            .child(
+                // Command palette panel
+                div()
+                    .w(px(600.0))
+                    .bg(theme.alias.color_surface)
+                    .rounded(theme.global.radius_lg)
+                    .shadow_xl()
+                    .overflow_hidden()
+                    .child(
+                        // Search input
+                        div()
+                            .p(theme.global.spacing_sm)
+                            .border_color(theme.alias.color_border)
+                            .border_b(px(1.0))
+                            .child(
+                                Input::new()
+                                    .value(self.props.query.clone())
+                                    .placeholder("Search commands...")
+                            )
+                    )
+                    .child(
+                        // Commands list
+                        div()
+                            .max_h(px(400.0))
                             .children(
                                 self.props.commands.iter().map(|cmd| {
                                     div()

@@ -197,6 +197,59 @@ impl Render for Radio {
     }
 }
 
+impl IntoElement for Radio {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        // Get theme and tokens
+        let theme = Theme::default();
+        let tokens = RadioTokens::from_theme(&theme);
+
+        // Build radio circle
+        let mut radio_circle = div()
+            .flex()
+            .items_center()
+            .justify_center()
+            .size(tokens.size)
+            .bg(self.background_color(&tokens))
+            .border_color(self.border_color(&tokens))
+            .border(tokens.border_width)
+            .rounded(tokens.size); // Fully rounded for circle
+
+        // Add inner dot if selected
+        if self.props.selected {
+            radio_circle = radio_circle.child(
+                div()
+                    .size(tokens.dot_size)
+                    .bg(tokens.dot_color)
+                    .rounded(tokens.dot_size) // Fully rounded for circle
+            );
+        }
+
+        // If there's a label, wrap in container with label
+        if let Some(label_text) = &self.props.label {
+            div()
+                .flex()
+                .flex_row()
+                .items_center()
+                .gap(tokens.label_gap)
+                .child(radio_circle)
+                .child(
+                    div()
+                        .text_size(tokens.label_font_size)
+                        .text_color(if self.props.disabled {
+                            tokens.label_color_disabled
+                        } else {
+                            tokens.label_color
+                        })
+                        .child(label_text.clone())
+                )
+        } else {
+            radio_circle
+        }
+    }
+}
+
 // NOTE: Unit tests temporarily removed due to GPUI procedural macro incompatibility with #[test]
 // The macro causes infinite recursion during test compilation (SIGBUS error).
 // Tests can be re-added once GPUI's macro system is updated, or moved to integration tests.

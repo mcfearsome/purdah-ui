@@ -140,6 +140,14 @@ impl VStack {
     }
 }
 
+impl IntoElement for VStack {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        self.to_element()
+    }
+}
+
 /// Horizontal stack layout component
 ///
 /// HStack arranges children horizontally with configurable gap and alignment.
@@ -244,5 +252,13 @@ impl HStack {
         };
 
         element
+    }
+}
+
+impl IntoElement for HStack {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        self.to_element()
     }
 }

@@ -344,6 +344,10 @@ pub struct AliasTokens {
     pub color_surface_hover: Hsla,
     /// Elevated surface for cards/popovers (gray_50 in light, gray_800 in dark)
     pub color_surface_elevated: Hsla,
+    /// Subtle background for secondary elements
+    pub color_background_subtle: Hsla,
+    /// Hover state for background elements
+    pub color_background_hover: Hsla,
 
     // Text colors - Hierarchy
     /// Primary text color with highest contrast (gray_900 in light, gray_100 in dark)
@@ -423,6 +427,8 @@ impl AliasTokens {
             color_surface: hsla(0.0, 0.0, 1.0, 1.0), // Pure white
             color_surface_hover: global.gray_50,
             color_surface_elevated: global.gray_50,
+            color_background_subtle: global.gray_100,
+            color_background_hover: global.gray_200,
 
             // Text colors
             color_text_primary: global.gray_900,
@@ -475,6 +481,8 @@ impl AliasTokens {
             color_surface: global.gray_900,
             color_surface_hover: global.gray_800,
             color_surface_elevated: global.gray_800,
+            color_background_subtle: global.gray_800,
+            color_background_hover: global.gray_700,
 
             // Text colors (light text on dark)
             color_text_primary: global.gray_100,

@@ -1,6 +1,7 @@
 //! Switch toggle component for binary state control.
 
 use gpui::*;
+use gpui::prelude::FluentBuilder;
 use crate::theme::{SwitchTokens, Theme};
 
 /// Switch configuration properties
@@ -129,6 +130,64 @@ impl Switch {
 
 impl Render for Switch {
     fn render(&mut self, _window: &mut Window, _cx: &mut Context<'_, Self>) -> impl IntoElement {
+        // Get theme and tokens
+        let theme = Theme::default();
+        let tokens = SwitchTokens::from_theme(&theme);
+
+        // Build switch track
+        let switch_track = div()
+            .relative()
+            .flex()
+            .items_center()
+            .w(tokens.width)
+            .h(tokens.height)
+            .bg(self.background_color(&tokens))
+            .rounded(tokens.height) // Fully rounded for pill shape
+            .child(
+                // Thumb (the sliding circle)
+                div()
+                    .absolute()
+                    .size(tokens.thumb_size)
+                    .bg(self.thumb_color(&tokens))
+                    .rounded(tokens.thumb_size) // Fully rounded for circle
+                    .when(self.props.toggled, |this| {
+                        // Position thumb on right when toggled
+                        this.right(tokens.thumb_padding)
+                    })
+                    .when(!self.props.toggled, |this| {
+                        // Position thumb on left when not toggled
+                        this.left(tokens.thumb_padding)
+                    })
+            );
+
+        // If there's a label, wrap in container with label
+        if let Some(label_text) = &self.props.label {
+            div()
+                .flex()
+                .flex_row()
+                .items_center()
+                .gap(tokens.label_gap)
+                .child(switch_track)
+                .child(
+                    div()
+                        .text_size(tokens.label_font_size)
+                        .text_color(if self.props.disabled {
+                            tokens.label_color_disabled
+                        } else {
+                            tokens.label_color
+                        })
+                        .child(label_text.clone())
+                )
+        } else {
+            switch_track
+        }
+    }
+}
+
+impl IntoElement for Switch {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
         // Get theme and tokens
         let theme = Theme::default();
         let tokens = SwitchTokens::from_theme(&theme);

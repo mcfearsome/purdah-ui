@@ -81,3 +81,27 @@ impl Render for Divider {
         }
     }
 }
+
+impl IntoElement for Divider {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        let theme = Theme::default();
+        let color = theme.alias.color_border;
+
+        match self.orientation {
+            DividerOrientation::Horizontal => {
+                div()
+                    .w_full()
+                    .h(px(1.0))
+                    .bg(color)
+            }
+            DividerOrientation::Vertical => {
+                div()
+                    .h_full()
+                    .w(px(1.0))
+                    .bg(color)
+            }
+        }
+    }
+}

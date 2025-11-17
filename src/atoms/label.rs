@@ -135,6 +135,21 @@ impl Render for Label {
     }
 }
 
+impl IntoElement for Label {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        let theme = Theme::default();
+        let tokens = LabelTokens::from_theme(&theme);
+
+        div()
+            .text_size(self.font_size(&tokens))
+            .font_weight(self.font_weight(&tokens))
+            .text_color(self.text_color(&tokens))
+            .child(self.text.clone())
+    }
+}
+
 // NOTE: Unit tests temporarily removed due to GPUI procedural macro incompatibility with #[test]
 // The macro causes infinite recursion during test compilation (SIGBUS error).
 // Tests can be re-added once GPUI's macro system is updated, or moved to integration tests.

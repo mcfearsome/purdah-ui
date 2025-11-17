@@ -58,3 +58,17 @@ impl Render for Spacer {
         }
     }
 }
+
+impl IntoElement for Spacer {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        if let Some(size) = self.size {
+            // Fixed size spacer
+            div().size(size)
+        } else {
+            // Flexible spacer
+            div().flex_1()
+        }
+    }
+}

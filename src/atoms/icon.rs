@@ -171,6 +171,27 @@ impl Render for Icon {
     }
 }
 
+impl IntoElement for Icon {
+    type Element = Svg;
+
+    fn into_element(self) -> Self::Element {
+        // TEMPORARY: Creates default theme on each render
+        // TODO: Replace with ThemeProvider context access in Phase 3
+        //       let theme = cx.global::<ThemeProvider>().current_theme();
+        let theme = Theme::default();
+        let tokens = IconTokens::from_theme(&theme);
+
+        let size = self.icon_size(&tokens);
+        let color = self.icon_color(&tokens);
+
+        // Create SVG element with path
+        svg()
+            .size(size)
+            .path(self.path.clone())
+            .text_color(color) // SVG inherits text color for fill
+    }
+}
+
 // NOTE: Unit tests temporarily removed due to GPUI procedural macro incompatibility with #[test]
 // The macro causes infinite recursion during test compilation (SIGBUS error).
 // Tests can be re-added once GPUI's macro system is updated, or moved to integration tests.

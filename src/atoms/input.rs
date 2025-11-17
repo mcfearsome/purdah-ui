@@ -217,6 +217,59 @@ impl Render for Input {
     }
 }
 
+impl IntoElement for Input {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        // TEMPORARY: Creates default theme on each render
+        // TODO: Replace with ThemeProvider context access in Phase 3
+        //       let theme = cx.global::<ThemeProvider>().current_theme();
+        let theme = Theme::default();
+        let tokens = InputTokens::from_theme(&theme);
+
+        // Build input container
+        let input = div()
+            .flex()
+            .flex_col()
+            .gap(tokens.padding_y / 2.0);
+
+        // Build input field
+        let field = div()
+            .px(tokens.padding_x)
+            .py(tokens.padding_y)
+            .bg(self.background_color(&tokens))
+            .text_color(self.text_color(&tokens))
+            .text_size(tokens.font_size)
+            .font_weight(tokens.font_weight)
+            .border_color(self.border_color(&tokens))
+            .border(tokens.border_width)
+            .rounded(tokens.border_radius);
+
+        // Show placeholder or value
+        let content = if self.props.value.is_empty() {
+            div()
+                .text_color(tokens.text_placeholder)
+                .child(self.props.placeholder.clone())
+        } else {
+            div().child(self.props.value.clone())
+        };
+
+        // Build complete input with optional error message
+        if let Some(error_msg) = &self.props.error_message {
+            input
+                .child(field.child(content))
+                .child(
+                    div()
+                        .text_size(tokens.font_size * 0.875) // Slightly smaller for error text
+                        .text_color(tokens.text_error)
+                        .child(error_msg.clone()),
+                )
+        } else {
+            input.child(field.child(content))
+        }
+    }
+}
+
 // NOTE: Unit tests temporarily removed due to GPUI procedural macro incompatibility with #[test]
 // The macro causes infinite recursion during test compilation (SIGBUS error).
 // Tests can be re-added once GPUI's macro system is updated, or moved to integration tests.

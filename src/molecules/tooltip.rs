@@ -190,26 +190,21 @@ impl Render for Tooltip {
             .py(px(6.0))
             .rounded(theme.global.radius_sm)
             .shadow_lg()
-            .z_index(1000)
             .max_w(px(300.0));
 
         // Position the tooltip
         tooltip = match self.props.position {
             TooltipPosition::Top => tooltip
                 .bottom_full()
-                .left_half()
                 .mb(px(8.0)),
             TooltipPosition::Bottom => tooltip
                 .top_full()
-                .left_half()
                 .mt(px(8.0)),
             TooltipPosition::Left => tooltip
                 .right_full()
-                .top_half()
                 .mr(px(8.0)),
             TooltipPosition::Right => tooltip
                 .left_full()
-                .top_half()
                 .ml(px(8.0)),
         };
 
@@ -231,17 +226,84 @@ impl Render for Tooltip {
             // Position arrow based on tooltip position
             let arrow = match self.props.position {
                 TooltipPosition::Top => arrow
-                    .bottom(px(-4.0))
-                    .left_half(),
+                    .bottom(px(-4.0)),
                 TooltipPosition::Bottom => arrow
-                    .top(px(-4.0))
-                    .left_half(),
+                    .top(px(-4.0)),
                 TooltipPosition::Left => arrow
-                    .right(px(-4.0))
-                    .top_half(),
+                    .right(px(-4.0)),
                 TooltipPosition::Right => arrow
-                    .left(px(-4.0))
-                    .top_half(),
+                    .left(px(-4.0)),
+            };
+
+            tooltip = tooltip.child(arrow);
+        }
+
+        tooltip
+    }
+}
+
+impl IntoElement for Tooltip {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        let theme = Theme::default();
+
+        if !self.props.visible {
+            return div(); // Return empty div if not visible
+        }
+
+        // Build tooltip container
+        let mut tooltip = div()
+            .absolute()
+            .bg(hsla(0.0, 0.0, 0.1, 0.95)) // Dark semi-transparent background
+            .text_color(hsla(0.0, 0.0, 1.0, 1.0)) // White text
+            .px(theme.global.spacing_sm)
+            .py(px(6.0))
+            .rounded(theme.global.radius_sm)
+            .shadow_lg()
+            .max_w(px(300.0));
+
+        // Position the tooltip
+        tooltip = match self.props.position {
+            TooltipPosition::Top => tooltip
+                .bottom_full()
+                .mb(px(8.0)),
+            TooltipPosition::Bottom => tooltip
+                .top_full()
+                .mt(px(8.0)),
+            TooltipPosition::Left => tooltip
+                .right_full()
+                .mr(px(8.0)),
+            TooltipPosition::Right => tooltip
+                .left_full()
+                .ml(px(8.0)),
+        };
+
+        // Add content
+        tooltip = tooltip.child(
+            Label::new(self.props.content.clone())
+                .variant(LabelVariant::Caption)
+                .color(hsla(0.0, 0.0, 1.0, 1.0))
+        );
+
+        // Add arrow if enabled
+        if self.props.show_arrow {
+            let arrow = div()
+                .absolute()
+                .w(px(8.0))
+                .h(px(8.0))
+                .bg(hsla(0.0, 0.0, 0.1, 0.95));
+
+            // Position arrow based on tooltip position
+            let arrow = match self.props.position {
+                TooltipPosition::Top => arrow
+                    .bottom(px(-4.0)),
+                TooltipPosition::Bottom => arrow
+                    .top(px(-4.0)),
+                TooltipPosition::Left => arrow
+                    .right(px(-4.0)),
+                TooltipPosition::Right => arrow
+                    .left(px(-4.0)),
             };
 
             tooltip = tooltip.child(arrow);

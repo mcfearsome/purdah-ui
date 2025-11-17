@@ -250,6 +250,61 @@ impl Render for Avatar {
     }
 }
 
+impl IntoElement for Avatar {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        // Get theme and tokens
+        let theme = Theme::default();
+        let tokens = AvatarTokens::from_theme(&theme);
+
+        let size = self.avatar_size(&tokens);
+        let font_size = self.font_size(&tokens);
+        let bg_color = self.props.background.unwrap_or(tokens.background_default);
+
+        // Build avatar container with position relative for status indicator
+        let mut container = div()
+            .relative()
+            .flex()
+            .items_center()
+            .justify_center();
+
+        // Build avatar circle
+        let avatar = div()
+            .flex()
+            .items_center()
+            .justify_center()
+            .size(size)
+            .bg(bg_color)
+            .text_color(tokens.text_color)
+            .text_size(font_size)
+            .font_weight(FontWeight(tokens.font_weight as f32))
+            .rounded(size) // Fully rounded for circle
+            .overflow_hidden() // Clip content to circle
+            .child(self.props.initials.clone());
+
+        container = container.child(avatar);
+
+        // Add status indicator if present
+        if let Some(status_color) = self.status_color(&tokens) {
+            let status_size = self.status_size(&tokens);
+            let status_indicator = div()
+                .absolute()
+                .bottom(px(0.0))
+                .right(px(0.0))
+                .size(status_size)
+                .bg(status_color)
+                .rounded(status_size) // Fully rounded for circle
+                .border_color(tokens.status_border)
+                .border(tokens.status_border_width);
+
+            container = container.child(status_indicator);
+        }
+
+        container
+    }
+}
+
 // NOTE: Unit tests temporarily removed due to GPUI procedural macro incompatibility with #[test]
 // The macro causes infinite recursion during test compilation (SIGBUS error).
 // Tests can be re-added once GPUI's macro system is updated, or moved to integration tests.

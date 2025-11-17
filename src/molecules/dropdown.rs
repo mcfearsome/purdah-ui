@@ -362,7 +362,150 @@ impl Render for Dropdown {
                 .left(px(0.0))
                 .min_w(px(200.0))
                 .max_h(px(300.0))
-                .overflow_y_scroll()
+                .bg(theme.alias.color_surface)
+                .border(px(1.0))
+                .border_color(theme.alias.color_border)
+                .rounded(theme.global.radius_md)
+                .shadow_lg()
+                .flex()
+                .flex_col()
+                .py(px(4.0));
+
+            // Add options
+            for option in &self.props.options {
+                let is_selected = self.props.selected.as_ref() == Some(&option.value);
+
+                let mut option_item = div()
+                    .px(theme.global.spacing_md)
+                    .py(theme.global.spacing_sm)
+                    .flex()
+                    .flex_row()
+                    .items_center()
+                    .gap(theme.global.spacing_sm)
+                    .cursor_pointer();
+
+                if is_selected {
+                    option_item = option_item
+                        .bg(theme.alias.color_primary)
+                        .text_color(hsla(0.0, 0.0, 1.0, 1.0)); // white
+                } else if option.disabled {
+                    option_item = option_item
+                        .cursor_not_allowed()
+                        .opacity(0.5);
+                } else {
+                    option_item = option_item
+                        .hover(|style| {
+                            style.bg(theme.alias.color_background_hover)
+                        });
+                }
+
+                // Add icon if present
+                if let Some(icon_path) = option.icon {
+                    option_item = option_item.child(Icon::new(icon_path));
+                }
+
+                // Add label
+                option_item = option_item.child(
+                    Label::new(option.label.clone())
+                        .variant(LabelVariant::Body)
+                );
+
+                menu = menu.child(option_item);
+            }
+
+            container = container.child(menu);
+        }
+
+        container
+    }
+}
+
+impl IntoElement for Dropdown {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        let theme = Theme::default();
+
+        // Get selected option label or placeholder
+        let display_text = if let Some(ref selected_value) = self.props.selected {
+            self.props.options
+                .iter()
+                .find(|opt| opt.value == *selected_value)
+                .map(|opt| opt.label.clone())
+                .unwrap_or(self.props.placeholder.clone())
+        } else {
+            self.props.placeholder.clone()
+        };
+
+        // Build dropdown trigger button
+        let mut trigger = div()
+            .px(theme.global.spacing_md)
+            .py(theme.global.spacing_sm)
+            .rounded(theme.global.radius_md)
+            .flex()
+            .flex_row()
+            .items_center()
+            .justify_between()
+            .gap(theme.global.spacing_sm)
+            .min_w(px(200.0))
+            .cursor_pointer();
+
+        // Apply variant styling
+        trigger = match self.props.variant {
+            DropdownVariant::Outlined => trigger
+                .bg(theme.alias.color_surface)
+                .border(px(1.0))
+                .border_color(theme.alias.color_border)
+                .hover(|style| {
+                    style.border_color(theme.alias.color_primary)
+                }),
+            DropdownVariant::Filled => trigger
+                .bg(theme.alias.color_background_subtle)
+                .hover(|style| {
+                    style.bg(theme.alias.color_background_hover)
+                }),
+            DropdownVariant::Ghost => trigger
+                .bg(hsla(0.0, 0.0, 0.0, 0.0))
+                .hover(|style| {
+                    style.bg(theme.alias.color_background_hover)
+                }),
+        };
+
+        // Apply disabled state
+        if self.props.disabled {
+            trigger = trigger
+                .cursor_not_allowed()
+                .opacity(0.5);
+        }
+
+        // Add display text and chevron icon
+        trigger = trigger
+            .child(
+                Label::new(display_text)
+                    .variant(LabelVariant::Body)
+                    .color(if self.props.selected.is_some() {
+                        theme.alias.color_text_primary
+                    } else {
+                        theme.alias.color_text_secondary
+                    })
+            )
+            .child(
+                Icon::new(icons::ARROW_DOWN)
+            );
+
+        // Build container that holds both trigger and dropdown menu
+        let mut container = div()
+            .relative()
+            .child(trigger);
+
+        // Add dropdown menu if open
+        if self.props.open {
+            let mut menu = div()
+                .absolute()
+                .top(px(40.0)) // Below trigger
+                .left(px(0.0))
+                .min_w(px(200.0))
+                .max_h(px(300.0))
                 .bg(theme.alias.color_surface)
                 .border(px(1.0))
                 .border_color(theme.alias.color_border)

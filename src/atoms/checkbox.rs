@@ -161,7 +161,7 @@ impl Checkbox {
     }
 
     /// Render the check icon based on state
-    fn render_icon(&self, tokens: &CheckboxTokens) -> Option<impl IntoElement> {
+    fn render_icon(&self, tokens: &CheckboxTokens) -> Option<AnyElement> {
         match self.props.state {
             CheckboxState::Unchecked => None,
             CheckboxState::Checked => {
@@ -169,8 +169,9 @@ impl Checkbox {
                 Some(
                     svg()
                         .size(tokens.icon_size)
-                        .path("M20 6L9 17l-5-5".into()) // Checkmark path
+                        .path(SharedString::from("M20 6L9 17l-5-5")) // Checkmark path
                         .text_color(tokens.icon_color)
+                        .into_any_element()
                 )
             }
             CheckboxState::Indeterminate => {
@@ -181,6 +182,7 @@ impl Checkbox {
                         .h(px(2.0))
                         .bg(tokens.icon_color)
                         .rounded(px(1.0))
+                        .into_any_element()
                 )
             }
         }
@@ -189,6 +191,56 @@ impl Checkbox {
 
 impl Render for Checkbox {
     fn render(&mut self, _window: &mut Window, _cx: &mut Context<'_, Self>) -> impl IntoElement {
+        // Get theme and tokens
+        let theme = Theme::default();
+        let tokens = CheckboxTokens::from_theme(&theme);
+
+        // Build checkbox box
+        let checkbox_box = div()
+            .flex()
+            .items_center()
+            .justify_center()
+            .size(tokens.size)
+            .bg(self.background_color(&tokens))
+            .border_color(self.border_color(&tokens))
+            .border(tokens.border_width)
+            .rounded(tokens.border_radius);
+
+        // Add icon if checked or indeterminate
+        let checkbox_box = if let Some(icon) = self.render_icon(&tokens) {
+            checkbox_box.child(icon)
+        } else {
+            checkbox_box
+        };
+
+        // If there's a label, wrap in container with label
+        if let Some(label_text) = &self.props.label {
+            div()
+                .flex()
+                .flex_row()
+                .items_center()
+                .gap(tokens.label_gap)
+                .child(checkbox_box)
+                .child(
+                    div()
+                        .text_size(tokens.label_font_size)
+                        .text_color(if self.props.disabled {
+                            tokens.label_color_disabled
+                        } else {
+                            tokens.label_color
+                        })
+                        .child(label_text.clone())
+                )
+        } else {
+            checkbox_box
+        }
+    }
+}
+
+impl IntoElement for Checkbox {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
         // Get theme and tokens
         let theme = Theme::default();
         let tokens = CheckboxTokens::from_theme(&theme);

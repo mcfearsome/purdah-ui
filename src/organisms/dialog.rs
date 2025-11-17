@@ -113,7 +113,74 @@ impl Render for Dialog {
 
         // Build dialog overlay and content
         div()
-            .fixed()
+            .absolute()
+            .top(px(0.0))
+            .left(px(0.0))
+            .w_full()
+            .h_full()
+            .flex()
+            .items_center()
+            .justify_center()
+            .bg(hsla(0.0, 0.0, 0.0, 0.5)) // Semi-transparent overlay
+            .child(
+                // Dialog panel
+                div()
+                    .bg(theme.alias.color_surface)
+                    .rounded(theme.global.radius_lg)
+                    .p(theme.global.spacing_lg)
+                    .min_w(px(400.0))
+                    .max_w(px(600.0))
+                    .shadow_lg()
+                    .flex()
+                    .flex_col()
+                    .gap(theme.global.spacing_md)
+                    .child(
+                        // Title
+                        Label::new(self.props.title.clone())
+                            .variant(LabelVariant::Heading2)
+                    )
+                    .when_some(self.props.description.clone(), |div, desc| {
+                        div.child(
+                            Label::new(desc)
+                                .variant(LabelVariant::Body)
+                                .color(theme.alias.color_text_secondary)
+                        )
+                    })
+                    .child(
+                        // Action buttons
+                        div()
+                            .flex()
+                            .flex_row()
+                            .gap(theme.global.spacing_sm)
+                            .justify_end()
+                            .child(
+                                Button::new()
+                                    .label("Cancel")
+                                    .variant(ButtonVariant::Outline)
+                            )
+                            .child(
+                                Button::new()
+                                    .label("Confirm")
+                                    .variant(ButtonVariant::Primary)
+                            )
+                    )
+            )
+    }
+}
+
+impl IntoElement for Dialog {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        let theme = Theme::default();
+
+        if !self.props.open {
+            return div(); // Return empty div if not open
+        }
+
+        // Build dialog overlay and content
+        div()
+            .absolute()
             .top(px(0.0))
             .left(px(0.0))
             .w_full()

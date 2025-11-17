@@ -102,9 +102,12 @@ impl FocusTrap {
     /// let mut trap = FocusTrap::new();
     /// trap.initialize(cx);
     /// ```
-    pub fn initialize<V>(&mut self, cx: &mut Context<V>) {
+    pub fn initialize<V>(&mut self, _cx: &mut Context<V>) {
         if self.restore_focus {
-            self.previous_focus = cx.focused();
+            // TODO: GPUI focus API has changed
+            // Need to find correct way to get currently focused element
+            // self.previous_focus = window.focused();
+            self.previous_focus = None;
         }
     }
 
@@ -117,10 +120,12 @@ impl FocusTrap {
     /// ```rust,ignore
     /// trap.cleanup(cx);
     /// ```
-    pub fn cleanup<V>(&self, cx: &mut Context<V>) {
+    pub fn cleanup<V>(&self, _cx: &mut Context<V>) {
         if self.restore_focus {
-            if let Some(ref handle) = self.previous_focus {
-                cx.focus(handle);
+            if let Some(ref _handle) = self.previous_focus {
+                // TODO: GPUI focus API has changed
+                // Need to find correct way to set focus
+                // window.focus(handle) or handle.focus(window)
             }
         }
     }

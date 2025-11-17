@@ -227,7 +227,6 @@ impl Render for Popover {
             .border_color(theme.alias.color_border)
             .rounded(theme.global.radius_lg)
             .shadow_xl()
-            .z_index(1000)
             .min_w(px(200.0))
             .max_w(px(400.0))
             .flex()
@@ -237,19 +236,15 @@ impl Render for Popover {
         popover = match self.props.position {
             PopoverPosition::Top => popover
                 .bottom_full()
-                .left_half()
                 .mb(theme.global.spacing_sm),
             PopoverPosition::Bottom => popover
                 .top_full()
-                .left_half()
                 .mt(theme.global.spacing_sm),
             PopoverPosition::Left => popover
                 .right_full()
-                .top_half()
                 .mr(theme.global.spacing_sm),
             PopoverPosition::Right => popover
                 .left_full()
-                .top_half()
                 .ml(theme.global.spacing_sm),
         };
 
@@ -269,7 +264,7 @@ impl Render for Popover {
             if let Some(ref title) = self.props.title {
                 header = header.child(
                     Label::new(title.clone())
-                        .variant(LabelVariant::Heading4)
+                        .variant(LabelVariant::Heading3)
                 );
             } else {
                 header = header.child(div()); // Empty spacer
@@ -313,16 +308,134 @@ impl Render for Popover {
             let arrow = match self.props.position {
                 PopoverPosition::Top => arrow
                     .bottom(px(-6.0))
-                    .left_half(),
+                    .left(px(50.)),
                 PopoverPosition::Bottom => arrow
                     .top(px(-6.0))
-                    .left_half(),
+                    .left(px(50.)),
                 PopoverPosition::Left => arrow
                     .right(px(-6.0))
-                    .top_half(),
+                    .top(px(50.)),
                 PopoverPosition::Right => arrow
                     .left(px(-6.0))
-                    .top_half(),
+                    .top(px(50.)),
+            };
+
+            popover = popover.child(arrow);
+        }
+
+        popover
+    }
+}
+
+impl IntoElement for Popover {
+    type Element = Div;
+
+    fn into_element(self) -> Self::Element {
+        let theme = Theme::default();
+
+        if !self.props.open {
+            return div(); // Return empty div if not open
+        }
+
+        // Build popover container
+        let mut popover = div()
+            .absolute()
+            .bg(theme.alias.color_surface)
+            .border(px(1.0))
+            .border_color(theme.alias.color_border)
+            .rounded(theme.global.radius_lg)
+            .shadow_xl()
+            .min_w(px(200.0))
+            .max_w(px(400.0))
+            .flex()
+            .flex_col();
+
+        // Position the popover
+        popover = match self.props.position {
+            PopoverPosition::Top => popover
+                .bottom_full()
+                .mb(theme.global.spacing_sm),
+            PopoverPosition::Bottom => popover
+                .top_full()
+                .mt(theme.global.spacing_sm),
+            PopoverPosition::Left => popover
+                .right_full()
+                .mr(theme.global.spacing_sm),
+            PopoverPosition::Right => popover
+                .left_full()
+                .ml(theme.global.spacing_sm),
+        };
+
+        // Add header if title exists or close button is shown
+        if self.props.title.is_some() || self.props.show_close {
+            let mut header = div()
+                .flex()
+                .flex_row()
+                .items_center()
+                .justify_between()
+                .px(theme.global.spacing_md)
+                .py(theme.global.spacing_sm)
+                .border_b(px(1.0))
+                .border_color(theme.alias.color_border);
+
+            // Add title if present
+            if let Some(ref title) = self.props.title {
+                header = header.child(
+                    Label::new(title.clone())
+                        .variant(LabelVariant::Heading3)
+                );
+            } else {
+                header = header.child(div()); // Empty spacer
+            }
+
+            // Add close button if enabled
+            if self.props.show_close {
+                header = header.child(
+                    Button::new()
+                        .label("×")
+                        .variant(ButtonVariant::Ghost)
+                );
+            }
+
+            popover = popover.child(header);
+        }
+
+        // Add content
+        popover = popover.child(
+            div()
+                .px(theme.global.spacing_md)
+                .py(theme.global.spacing_md)
+                .child(
+                    Label::new(self.props.content.clone())
+                        .variant(LabelVariant::Body)
+                        .color(theme.alias.color_text_secondary)
+                )
+        );
+
+        // Add arrow if enabled
+        if self.props.show_arrow {
+            let arrow = div()
+                .absolute()
+                .w(px(12.0))
+                .h(px(12.0))
+                .bg(theme.alias.color_surface)
+                .border(px(1.0))
+                .border_color(theme.alias.color_border);
+
+            // Position arrow based on popover position
+            let arrow = match self.props.position {
+                PopoverPosition::Top => arrow
+                    .bottom(px(-6.0))
+                    .left(px(50.)),
+                PopoverPosition::Bottom => arrow
+                    .top(px(-6.0))
+                    .left(px(50.)),
+                PopoverPosition::Left => arrow
+                    .right(px(-6.0))
+                    .top(px(50.)),
+                PopoverPosition::Right => arrow
+                    .left(px(-6.0))
+                    .top(px(50.)),
             };
 
             popover = popover.child(arrow);

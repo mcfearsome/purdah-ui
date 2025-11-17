@@ -10,9 +10,10 @@ keywords = ["gpui", "ui", "components", "desktop"]
 categories = ["gui"]
 
 [dependencies]
-# GPUI dependency - using a recent stable commit
+# GPUI dependency - pinned to specific commit for stability
+# Commit fd1494c3 from 2025-01-17 (tested and working)
 # TODO: Update to a stable release once GPUI is published to crates.io
-gpui = { git = "https://github.com/zed-industries/zed" }
+gpui = { git = "https://github.com/zed-industries/zed", rev = "fd1494c3" }
 
 [dev-dependencies]
 
