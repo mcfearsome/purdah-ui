@@ -417,25 +417,16 @@ impl ShowcaseApp {
     }
 }
 
-// TODO: Fix App initialization for current GPUI version
-// The GPUI API has changed and examples need to be updated
-// For now, the showcase demonstrates component usage but cannot run
-/*
 fn main() {
-    // App initialization needs to be updated for pinned GPUI version
-    // Previous pattern: App::new().run(...)
-    // Current version may require different initialization
-    App::production().run(|cx| {
-        cx.open_window(WindowOptions::default(), |_window, cx| {
-            cx.new(|_cx| ShowcaseApp::new())
-        })
+    Application::new().run(|cx: &mut App| {
+        let bounds = Bounds::centered(None, size(px(1200.), px(800.)), cx);
+        cx.open_window(
+            WindowOptions {
+                window_bounds: Some(WindowBounds::Windowed(bounds)),
+                ..Default::default()
+            },
+            |_window, cx| cx.new(|_cx| ShowcaseApp::new()),
+        )
         .unwrap();
     });
-}
-*/
-
-fn main() {
-    eprintln!("ERROR: Showcase example is currently disabled due to GPUI API changes.");
-    eprintln!("The component library compiles successfully, but examples need App initialization updates.");
-    std::process::exit(1);
 }

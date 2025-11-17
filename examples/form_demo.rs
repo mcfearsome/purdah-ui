@@ -41,13 +41,29 @@ impl Render for FormDemoApp {
             .justify_center()
             .w_full()
             .h_full()
-            .bg(theme.alias.color_background)
+            .bg(theme.alias.color_surface)
             .child(
-                Container::new()
+                // Card-styled container (max-width wrapper)
+                div()
+                    .w_full()
+                    .max_w(px(500.0))
                     .child(
-                        Card::new()
-                            .title("Create Account")
-                            .variant(CardVariant::Elevated)
+                        // Card content with elevated styling
+                        div()
+                            .bg(theme.alias.color_surface)
+                            .rounded(theme.global.radius_lg)
+                            .p(theme.global.spacing_lg)
+                            .shadow_lg()
+                            .border_color(theme.alias.color_border)
+                            .border(px(1.0))
+                            .flex()
+                            .flex_col()
+                            .gap(theme.global.spacing_md)
+                            // Card title
+                            .child(
+                                Label::new("Create Account")
+                                    .variant(LabelVariant::Heading3)
+                            )
                             .child(
                                 VStack::new()
                                     .gap(theme.global.spacing_lg)
@@ -56,45 +72,28 @@ impl Render for FormDemoApp {
                                         FormGroup::new()
                                             .label("Email Address")
                                             .required(true)
-                                            .child(
-                                                Input::new()
-                                                    .placeholder("you@example.com")
-                                            )
+                                            .placeholder("you@example.com")
                                     )
                                     // Password field
                                     .child(
                                         FormGroup::new()
                                             .label("Password")
                                             .required(true)
-                                            .help_text("Must be at least 8 characters")
-                                            .child(
-                                                Input::new()
-                                                    .placeholder("••••••••")
-                                            )
+                                            .helper_text("Must be at least 8 characters")
+                                            .placeholder("••••••••")
                                     )
                                     // Confirm password field
                                     .child(
                                         FormGroup::new()
                                             .label("Confirm Password")
                                             .required(true)
-                                            .child(
-                                                Input::new()
-                                                    .placeholder("••••••••")
-                                            )
+                                            .placeholder("••••••••")
                                     )
-                                    // Account type dropdown
+                                    // Account type - using Input instead of Dropdown for now
                                     .child(
                                         FormGroup::new()
                                             .label("Account Type")
-                                            .child(
-                                                Dropdown::new()
-                                                    .options(vec![
-                                                        DropdownOption::new("Personal", "personal"),
-                                                        DropdownOption::new("Business", "business"),
-                                                        DropdownOption::new("Enterprise", "enterprise"),
-                                                    ])
-                                                    .placeholder("Select account type")
-                                            )
+                                            .placeholder("Select account type")
                                     )
                                     // Divider
                                     .child(
@@ -141,10 +140,15 @@ impl Render for FormDemoApp {
 }
 
 fn main() {
-    App::new().run(|cx: &mut AppContext| {
-        cx.open_window(WindowOptions::default(), |_window, cx| {
-            cx.new(|_cx| FormDemoApp::new())
-        })
+    Application::new().run(|cx: &mut App| {
+        let bounds = Bounds::centered(None, size(px(600.), px(800.)), cx);
+        cx.open_window(
+            WindowOptions {
+                window_bounds: Some(WindowBounds::Windowed(bounds)),
+                ..Default::default()
+            },
+            |_window, cx| cx.new(|_cx| FormDemoApp::new()),
+        )
         .unwrap();
     });
 }

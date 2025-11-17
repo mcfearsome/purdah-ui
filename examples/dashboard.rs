@@ -32,7 +32,7 @@ impl Render for DashboardApp {
             .flex_row()
             .w_full()
             .h_full()
-            .bg(theme.alias.color_background)
+            .bg(theme.alias.color_surface)
             // Sidebar
             .child(self.render_sidebar(&theme))
             // Main content
@@ -78,7 +78,7 @@ impl DashboardApp {
     fn nav_item(&self, theme: &Theme, label: &str, value: &str, icon: &'static str) -> impl IntoElement {
         let is_selected = self.selected_nav.as_ref() == value;
 
-        div()
+        let mut item = div()
             .flex()
             .flex_row()
             .items_center()
@@ -86,26 +86,27 @@ impl DashboardApp {
             .px(theme.global.spacing_md)
             .py(theme.global.spacing_sm)
             .rounded(theme.global.radius_md)
-            .cursor_pointer()
-            .when(is_selected, |d| {
-                d.bg(theme.alias.color_primary)
-                    .text_color(hsla(0.0, 0.0, 1.0, 1.0))
-            })
-            .when(!is_selected, |d| {
-                d.text_color(theme.alias.color_text_secondary)
-                    .hover(|style| {
-                        style.bg(theme.alias.color_background_hover)
-                    })
-            })
-            .child(Icon::new(icon))
-            .child(Label::new(label).variant(LabelVariant::Body))
+            .cursor_pointer();
+
+        item = if is_selected {
+            item.bg(theme.alias.color_primary)
+                .text_color(hsla(0.0, 0.0, 1.0, 1.0))
+        } else {
+            item.text_color(theme.alias.color_text_secondary)
+                .hover(|style| {
+                    style.bg(theme.alias.color_background_hover)
+                })
+        };
+
+        item.child(Icon::new(icon))
+            .child(Label::new(label.to_string()).variant(LabelVariant::Body))
     }
 
     fn render_main_content(&self, theme: &Theme) -> impl IntoElement {
         div()
             .flex_1()
             .h_full()
-            .overflow_y_scroll()
+            .overflow_hidden()
             .child(
                 VStack::new()
                     .gap(theme.global.spacing_xl)
@@ -118,8 +119,8 @@ impl DashboardApp {
                             .border_color(theme.alias.color_border)
                             .child(
                                 HStack::new()
-                                    .items_center()
-                                    .justify_between()
+                                    .align(Alignment::Center)
+                                    .justify(Justify::Between)
                                     .child(
                                         Label::new("Overview")
                                             .variant(LabelVariant::Heading1)
@@ -162,41 +163,51 @@ impl DashboardApp {
                     .variant(LabelVariant::Heading2)
             )
             .child(
-                HStack::new()
-                    .gap(theme.global.spacing_lg)
+                div()
                     .mt(theme.global.spacing_md)
-                    .child(self.metric_card(theme, "Total Users", "12,345", "+12%", true))
-                    .child(self.metric_card(theme, "Revenue", "$54,321", "+8%", true))
-                    .child(self.metric_card(theme, "Active Sessions", "1,234", "-3%", false))
+                    .child(
+                        HStack::new()
+                            .gap(theme.global.spacing_lg)
+                            .child(self.metric_card(theme, "Total Users", "12,345", "+12%", true))
+                            .child(self.metric_card(theme, "Revenue", "$54,321", "+8%", true))
+                            .child(self.metric_card(theme, "Active Sessions", "1,234", "-3%", false))
+                    )
             )
     }
 
     fn metric_card(&self, theme: &Theme, title: &str, value: &str, change: &str, is_positive: bool) -> impl IntoElement {
-        Card::new()
-            .variant(CardVariant::Outlined)
-            .hoverable(true)
+        div()
+            .bg(theme.alias.color_surface)
+            .rounded(theme.global.radius_lg)
+            .p(theme.global.spacing_lg)
+            .border_color(theme.alias.color_border)
+            .border(px(1.0))
+            .flex()
+            .flex_col()
+            .gap(theme.global.spacing_md)
+            .hover(|style| style.shadow_md())
             .child(
                 VStack::new()
                     .gap(theme.global.spacing_sm)
                     .child(
-                        Label::new(title)
+                        Label::new(title.to_string())
                             .variant(LabelVariant::Body)
                             .color(theme.alias.color_text_secondary)
                     )
                     .child(
-                        Label::new(value)
+                        Label::new(value.to_string())
                             .variant(LabelVariant::Heading1)
                     )
                     .child(
                         HStack::new()
-                            .items_center()
+                            .align(Alignment::Center)
                             .gap(theme.global.spacing_xs)
                             .child(
-                                Badge::new(change)
+                                Badge::new(change.to_string())
                                     .variant(if is_positive {
                                         BadgeVariant::Success
                                     } else {
-                                        BadgeVariant::Error
+                                        BadgeVariant::Danger
                                     })
                             )
                             .child(
@@ -209,9 +220,19 @@ impl DashboardApp {
     }
 
     fn render_recent_activity(&self, theme: &Theme) -> impl IntoElement {
-        Card::new()
-            .title("Recent Activity")
-            .variant(CardVariant::Outlined)
+        div()
+            .bg(theme.alias.color_surface)
+            .rounded(theme.global.radius_lg)
+            .p(theme.global.spacing_lg)
+            .border_color(theme.alias.color_border)
+            .border(px(1.0))
+            .flex()
+            .flex_col()
+            .gap(theme.global.spacing_md)
+            .child(
+                Label::new("Recent Activity")
+                    .variant(LabelVariant::Heading3)
+            )
             .child(
                 VStack::new()
                     .gap(theme.global.spacing_md)
@@ -227,16 +248,16 @@ impl DashboardApp {
 
     fn activity_item(&self, theme: &Theme, title: &str, time: &str) -> impl IntoElement {
         HStack::new()
-            .items_center()
-            .justify_between()
+            .align(Alignment::Center)
+            .justify(Justify::Between)
             .child(
                 VStack::new()
                     .child(
-                        Label::new(title)
+                        Label::new(title.to_string())
                             .variant(LabelVariant::Body)
                     )
                     .child(
-                        Label::new(time)
+                        Label::new(time.to_string())
                             .variant(LabelVariant::Caption)
                             .color(theme.alias.color_text_muted)
                     )
@@ -248,10 +269,15 @@ impl DashboardApp {
 }
 
 fn main() {
-    App::new().run(|cx: &mut AppContext| {
-        cx.open_window(WindowOptions::default(), |_window, cx| {
-            cx.new(|_cx| DashboardApp::new())
-        })
+    Application::new().run(|cx: &mut App| {
+        let bounds = Bounds::centered(None, size(px(1400.), px(900.)), cx);
+        cx.open_window(
+            WindowOptions {
+                window_bounds: Some(WindowBounds::Windowed(bounds)),
+                ..Default::default()
+            },
+            |_window, cx| cx.new(|_cx| DashboardApp::new()),
+        )
         .unwrap();
     });
 }
