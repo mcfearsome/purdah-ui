@@ -54,6 +54,7 @@ pub struct VStack {
     gap: Option<Pixels>,
     align: Alignment,
     justify: Justify,
+    children: Vec<AnyElement>,
 }
 
 impl VStack {
@@ -69,6 +70,7 @@ impl VStack {
             gap: None,
             align: Alignment::default(),
             justify: Justify::default(),
+            children: Vec::new(),
         }
     }
 
@@ -108,6 +110,33 @@ impl VStack {
         self
     }
 
+    /// Add a child element
+    ///
+    /// ## Example
+    ///
+    /// ```rust,ignore
+    /// VStack::new().child(Label::new("Hello"));
+    /// ```
+    pub fn child(mut self, child: impl IntoElement) -> Self {
+        self.children.push(child.into_any_element());
+        self
+    }
+
+    /// Add multiple children
+    ///
+    /// ## Example
+    ///
+    /// ```rust,ignore
+    /// VStack::new().children(vec![
+    ///     Label::new("First"),
+    ///     Label::new("Second"),
+    /// ]);
+    /// ```
+    pub fn children(mut self, children: impl IntoIterator<Item = impl IntoElement>) -> Self {
+        self.children.extend(children.into_iter().map(|c| c.into_any_element()));
+        self
+    }
+
     /// Convert to a GPUI div with flex column layout
     pub fn to_element(self) -> Div {
         let mut element = div()
@@ -135,6 +164,11 @@ impl VStack {
             Justify::Between => element.justify_between(),
             Justify::Around => element.justify_start(), // GPUI doesn't have justify_around
         };
+
+        // Add children
+        for child in self.children {
+            element = element.child(child);
+        }
 
         element
     }
@@ -169,6 +203,7 @@ pub struct HStack {
     gap: Option<Pixels>,
     align: Alignment,
     justify: Justify,
+    children: Vec<AnyElement>,
 }
 
 impl HStack {
@@ -184,6 +219,7 @@ impl HStack {
             gap: None,
             align: Alignment::default(),
             justify: Justify::default(),
+            children: Vec::new(),
         }
     }
 
@@ -223,6 +259,33 @@ impl HStack {
         self
     }
 
+    /// Add a child element
+    ///
+    /// ## Example
+    ///
+    /// ```rust,ignore
+    /// HStack::new().child(Label::new("Hello"));
+    /// ```
+    pub fn child(mut self, child: impl IntoElement) -> Self {
+        self.children.push(child.into_any_element());
+        self
+    }
+
+    /// Add multiple children
+    ///
+    /// ## Example
+    ///
+    /// ```rust,ignore
+    /// HStack::new().children(vec![
+    ///     Label::new("First"),
+    ///     Label::new("Second"),
+    /// ]);
+    /// ```
+    pub fn children(mut self, children: impl IntoIterator<Item = impl IntoElement>) -> Self {
+        self.children.extend(children.into_iter().map(|c| c.into_any_element()));
+        self
+    }
+
     /// Convert to a GPUI div with flex row layout
     pub fn to_element(self) -> Div {
         let mut element = div()
@@ -250,6 +313,11 @@ impl HStack {
             Justify::Between => element.justify_between(),
             Justify::Around => element.justify_start(), // GPUI doesn't have justify_around
         };
+
+        // Add children
+        for child in self.children {
+            element = element.child(child);
+        }
 
         element
     }

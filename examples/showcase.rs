@@ -38,7 +38,7 @@ impl Render for ShowcaseApp {
             .flex_col()
             .w_full()
             .h_full()
-            .bg(theme.alias.color_background)
+            .bg(theme.alias.color_surface)
             // Header
             .child(self.render_header(&theme))
             // Navigation tabs
@@ -68,6 +68,10 @@ impl ShowcaseApp {
                 Button::new()
                     .label(if self.dark_mode { "☀️ Light" } else { "🌙 Dark" })
                     .variant(ButtonVariant::Outline)
+                    .on_click(|_event, _window| {
+                        // TODO: Toggle dark mode - need state management
+                        println!("Dark mode toggle clicked!");
+                    })
             )
     }
 
@@ -94,16 +98,16 @@ impl ShowcaseApp {
     fn render_content(&self, theme: &Theme) -> impl IntoElement {
         div()
             .flex_1()
-            .overflow_y_scroll()
+            .overflow_hidden()
             .px(theme.global.spacing_xl)
             .py(theme.global.spacing_lg)
             .child(match self.selected_tab.as_ref() {
-                "atoms" => self.render_atoms_showcase(theme),
-                "molecules" => self.render_molecules_showcase(theme),
-                "organisms" => self.render_organisms_showcase(theme),
-                "layout" => self.render_layout_showcase(theme),
-                "utils" => self.render_utils_showcase(theme),
-                _ => div(),
+                "atoms" => self.render_atoms_showcase(theme).into_any_element(),
+                "molecules" => self.render_molecules_showcase(theme).into_any_element(),
+                "organisms" => self.render_organisms_showcase(theme).into_any_element(),
+                "layout" => self.render_layout_showcase(theme).into_any_element(),
+                "utils" => self.render_utils_showcase(theme).into_any_element(),
+                _ => div().into_any_element(),
             })
     }
 
@@ -173,7 +177,7 @@ impl ShowcaseApp {
     }
 
     /// Helper to create a showcase section
-    fn showcase_section(&self, theme: &Theme, title: &str, content: impl IntoElement) -> impl IntoElement {
+    fn showcase_section(&self, theme: &Theme, title: impl Into<SharedString>, content: impl IntoElement) -> impl IntoElement {
         VStack::new()
             .gap(theme.global.spacing_md)
             .child(
@@ -191,11 +195,46 @@ impl ShowcaseApp {
     fn render_buttons(&self, theme: &Theme) -> impl IntoElement {
         HStack::new()
             .gap(theme.global.spacing_sm)
-            .child(Button::new().label("Primary").variant(ButtonVariant::Primary))
-            .child(Button::new().label("Secondary").variant(ButtonVariant::Secondary))
-            .child(Button::new().label("Outline").variant(ButtonVariant::Outline))
-            .child(Button::new().label("Ghost").variant(ButtonVariant::Ghost))
-            .child(Button::new().label("Danger").variant(ButtonVariant::Danger))
+            .child(
+                Button::new()
+                    .label("Primary")
+                    .variant(ButtonVariant::Primary)
+                    .on_click(|_event, _window| {
+                        println!("Primary button clicked!");
+                    })
+            )
+            .child(
+                Button::new()
+                    .label("Secondary")
+                    .variant(ButtonVariant::Secondary)
+                    .on_click(|_event, _window| {
+                        println!("Secondary button clicked!");
+                    })
+            )
+            .child(
+                Button::new()
+                    .label("Outline")
+                    .variant(ButtonVariant::Outline)
+                    .on_click(|_event, _window| {
+                        println!("Outline button clicked!");
+                    })
+            )
+            .child(
+                Button::new()
+                    .label("Ghost")
+                    .variant(ButtonVariant::Ghost)
+                    .on_click(|_event, _window| {
+                        println!("Ghost button clicked!");
+                    })
+            )
+            .child(
+                Button::new()
+                    .label("Danger")
+                    .variant(ButtonVariant::Danger)
+                    .on_click(|_event, _window| {
+                        println!("Danger button clicked!");
+                    })
+            )
             .child(Button::new().label("Disabled").disabled(true))
     }
 
@@ -203,7 +242,13 @@ impl ShowcaseApp {
     fn render_inputs(&self, theme: &Theme) -> impl IntoElement {
         VStack::new()
             .gap(theme.global.spacing_sm)
-            .child(Input::new().placeholder("Default input"))
+            .child(
+                Input::new()
+                    .placeholder("Type something...")
+                    .on_change(|text, _window| {
+                        println!("Input changed: {}", text);
+                    })
+            )
             .child(Input::new().placeholder("Disabled input").disabled(true))
     }
 
@@ -214,7 +259,6 @@ impl ShowcaseApp {
             .child(Label::new("Heading 1").variant(LabelVariant::Heading1))
             .child(Label::new("Heading 2").variant(LabelVariant::Heading2))
             .child(Label::new("Heading 3").variant(LabelVariant::Heading3))
-            .child(Label::new("Heading 4").variant(LabelVariant::Heading4))
             .child(Label::new("Body text").variant(LabelVariant::Body))
             .child(Label::new("Caption text").variant(LabelVariant::Caption))
     }
@@ -226,8 +270,8 @@ impl ShowcaseApp {
             .child(Badge::new("Default").variant(BadgeVariant::Default))
             .child(Badge::new("Success").variant(BadgeVariant::Success))
             .child(Badge::new("Warning").variant(BadgeVariant::Warning))
-            .child(Badge::new("Error").variant(BadgeVariant::Error))
-            .child(Badge::new("Info").variant(BadgeVariant::Info))
+            .child(Badge::new("Danger").variant(BadgeVariant::Danger))
+            .child(Badge::new("Primary").variant(BadgeVariant::Primary))
     }
 
     /// Render avatar examples
@@ -244,9 +288,27 @@ impl ShowcaseApp {
     fn render_form_controls(&self, theme: &Theme) -> impl IntoElement {
         VStack::new()
             .gap(theme.global.spacing_sm)
-            .child(Checkbox::new().label("Checkbox option"))
-            .child(Radio::new().label("Radio option"))
-            .child(Switch::new().label("Switch option"))
+            .child(
+                Checkbox::new()
+                    .label("Checkbox option")
+                    .on_toggle(|checked, _window| {
+                        println!("Checkbox toggled: {}", checked);
+                    })
+            )
+            .child(
+                Radio::new()
+                    .label("Radio option")
+                    .on_select(|_window| {
+                        println!("Radio selected");
+                    })
+            )
+            .child(
+                Switch::new()
+                    .label("Switch option")
+                    .on_toggle(|toggled, _window| {
+                        println!("Switch toggled: {}", toggled);
+                    })
+            )
     }
 
     /// Render icon and spinner examples
@@ -355,11 +417,25 @@ impl ShowcaseApp {
     }
 }
 
+// TODO: Fix App initialization for current GPUI version
+// The GPUI API has changed and examples need to be updated
+// For now, the showcase demonstrates component usage but cannot run
+/*
 fn main() {
-    App::new().run(|cx: &mut AppContext| {
+    // App initialization needs to be updated for pinned GPUI version
+    // Previous pattern: App::new().run(...)
+    // Current version may require different initialization
+    App::production().run(|cx| {
         cx.open_window(WindowOptions::default(), |_window, cx| {
             cx.new(|_cx| ShowcaseApp::new())
         })
         .unwrap();
     });
+}
+*/
+
+fn main() {
+    eprintln!("ERROR: Showcase example is currently disabled due to GPUI API changes.");
+    eprintln!("The component library compiles successfully, but examples need App initialization updates.");
+    std::process::exit(1);
 }

@@ -1,6 +1,7 @@
 //! Radio button component for mutually exclusive selections.
 
 use gpui::*;
+use std::rc::Rc;
 use crate::theme::{RadioTokens, Theme};
 
 /// Radio button configuration properties
@@ -14,6 +15,8 @@ pub struct RadioProps {
     pub label: Option<SharedString>,
     /// Optional value for the radio button
     pub value: Option<SharedString>,
+    /// Select handler
+    pub on_select: Option<Rc<dyn Fn(&mut Window) + 'static>>,
 }
 
 impl Default for RadioProps {
@@ -23,6 +26,7 @@ impl Default for RadioProps {
             disabled: false,
             label: None,
             value: None,
+            on_select: None,
         }
     }
 }
@@ -119,6 +123,22 @@ impl Radio {
         self
     }
 
+    /// Set the select handler
+    ///
+    /// ## Example
+    ///
+    /// ```rust,ignore
+    /// Radio::new()
+    ///     .label("Option 1")
+    ///     .on_select(|window| {
+    ///         println!("Radio button selected");
+    ///     });
+    /// ```
+    pub fn on_select(mut self, handler: impl Fn(&mut Window) + 'static) -> Self {
+        self.props.on_select = Some(Rc::new(handler));
+        self
+    }
+
     /// Get background color based on state
     fn background_color(&self, tokens: &RadioTokens) -> Hsla {
         if self.props.disabled {
@@ -162,6 +182,16 @@ impl Render for Radio {
             .border_color(self.border_color(&tokens))
             .border(tokens.border_width)
             .rounded(tokens.size); // Fully rounded for circle
+
+        // Wire up select handler if provided and not disabled
+        if let Some(ref handler) = self.props.on_select {
+            if !self.props.disabled {
+                let handler = handler.clone();
+                radio_circle = radio_circle.on_mouse_down(MouseButton::Left, move |_event, window, _cx| {
+                    handler(window);
+                });
+            }
+        }
 
         // Add inner dot if selected
         if self.props.selected {
@@ -215,6 +245,15 @@ impl IntoElement for Radio {
             .border_color(self.border_color(&tokens))
             .border(tokens.border_width)
             .rounded(tokens.size); // Fully rounded for circle
+
+        // Wire up select handler if provided and not disabled
+        if let Some(handler) = self.props.on_select.clone() {
+            if !self.props.disabled {
+                radio_circle = radio_circle.on_mouse_down(MouseButton::Left, move |_event, window, _cx| {
+                    handler(window);
+                });
+            }
+        }
 
         // Add inner dot if selected
         if self.props.selected {

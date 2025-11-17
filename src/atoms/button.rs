@@ -1,6 +1,7 @@
 //! Button component with multiple variants and states.
 
 use gpui::*;
+use std::rc::Rc;
 use crate::theme::{ButtonTokens, Theme};
 
 /// Button visual variants
@@ -44,6 +45,8 @@ pub struct ButtonProps {
     pub disabled: bool,
     /// Whether button is in loading state
     pub loading: bool,
+    /// Click handler
+    pub on_click: Option<Rc<dyn Fn(&MouseDownEvent, &mut Window) + 'static>>,
 }
 
 impl Default for ButtonProps {
@@ -54,6 +57,7 @@ impl Default for ButtonProps {
             size: ButtonSize::default(),
             disabled: false,
             loading: false,
+            on_click: None,
         }
     }
 }
@@ -163,6 +167,22 @@ impl Button {
         self
     }
 
+    /// Set the click handler
+    ///
+    /// ## Example
+    ///
+    /// ```rust,ignore
+    /// Button::new()
+    ///     .label("Click me")
+    ///     .on_click(|event, window| {
+    ///         println!("Button clicked at {:?}", event.position);
+    ///     });
+    /// ```
+    pub fn on_click(mut self, handler: impl Fn(&MouseDownEvent, &mut Window) + 'static) -> Self {
+        self.props.on_click = Some(Rc::new(handler));
+        self
+    }
+
     /// Get background color based on variant
     fn background_color(&self, tokens: &ButtonTokens) -> Hsla {
         if self.props.disabled {
@@ -259,6 +279,16 @@ impl Render for Button {
             button = button.opacity(0.5);
         }
 
+        // Wire up click handler if provided and not disabled
+        if let Some(ref handler) = self.props.on_click {
+            if !self.props.disabled {
+                let handler = handler.clone();
+                button = button.on_mouse_down(MouseButton::Left, move |event, window, _cx| {
+                    handler(event, window);
+                });
+            }
+        }
+
         // Add label
         button.child(self.props.label.clone())
     }
@@ -302,6 +332,15 @@ impl IntoElement for Button {
         // Handle disabled state
         if self.props.disabled {
             button = button.opacity(0.5);
+        }
+
+        // Wire up click handler if provided and not disabled
+        if let Some(handler) = self.props.on_click {
+            if !self.props.disabled {
+                button = button.on_mouse_down(MouseButton::Left, move |event, window, _cx| {
+                    handler(event, window);
+                });
+            }
         }
 
         // Add label

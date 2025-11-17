@@ -1,6 +1,7 @@
 //! Checkbox component for form selections.
 
 use gpui::*;
+use std::rc::Rc;
 use crate::theme::{CheckboxTokens, Theme};
 
 /// Checkbox state variants
@@ -24,6 +25,8 @@ pub struct CheckboxProps {
     pub disabled: bool,
     /// Optional label text
     pub label: Option<SharedString>,
+    /// Toggle handler
+    pub on_toggle: Option<Rc<dyn Fn(bool, &mut Window) + 'static>>,
 }
 
 impl Default for CheckboxProps {
@@ -32,6 +35,7 @@ impl Default for CheckboxProps {
             state: CheckboxState::default(),
             disabled: false,
             label: None,
+            on_toggle: None,
         }
     }
 }
@@ -136,6 +140,22 @@ impl Checkbox {
         self
     }
 
+    /// Set the toggle handler
+    ///
+    /// ## Example
+    ///
+    /// ```rust,ignore
+    /// Checkbox::new()
+    ///     .label("Accept terms")
+    ///     .on_toggle(|checked, window| {
+    ///         println!("Checkbox toggled to: {}", checked);
+    ///     });
+    /// ```
+    pub fn on_toggle(mut self, handler: impl Fn(bool, &mut Window) + 'static) -> Self {
+        self.props.on_toggle = Some(Rc::new(handler));
+        self
+    }
+
     /// Get background color based on state
     fn background_color(&self, tokens: &CheckboxTokens) -> Hsla {
         if self.props.disabled {
@@ -196,7 +216,7 @@ impl Render for Checkbox {
         let tokens = CheckboxTokens::from_theme(&theme);
 
         // Build checkbox box
-        let checkbox_box = div()
+        let mut checkbox_box = div()
             .flex()
             .items_center()
             .justify_center()
@@ -205,6 +225,18 @@ impl Render for Checkbox {
             .border_color(self.border_color(&tokens))
             .border(tokens.border_width)
             .rounded(tokens.border_radius);
+
+        // Wire up toggle handler if provided and not disabled
+        if let Some(ref handler) = self.props.on_toggle {
+            if !self.props.disabled {
+                let handler = handler.clone();
+                let current_state = self.props.state;
+                checkbox_box = checkbox_box.on_mouse_down(MouseButton::Left, move |_event, window, _cx| {
+                    let new_checked = current_state != CheckboxState::Checked;
+                    handler(new_checked, window);
+                });
+            }
+        }
 
         // Add icon if checked or indeterminate
         let checkbox_box = if let Some(icon) = self.render_icon(&tokens) {
@@ -246,7 +278,7 @@ impl IntoElement for Checkbox {
         let tokens = CheckboxTokens::from_theme(&theme);
 
         // Build checkbox box
-        let checkbox_box = div()
+        let mut checkbox_box = div()
             .flex()
             .items_center()
             .justify_center()
@@ -255,6 +287,17 @@ impl IntoElement for Checkbox {
             .border_color(self.border_color(&tokens))
             .border(tokens.border_width)
             .rounded(tokens.border_radius);
+
+        // Wire up toggle handler if provided and not disabled
+        if let Some(handler) = self.props.on_toggle.clone() {
+            if !self.props.disabled {
+                let current_state = self.props.state;
+                checkbox_box = checkbox_box.on_mouse_down(MouseButton::Left, move |_event, window, _cx| {
+                    let new_checked = current_state != CheckboxState::Checked;
+                    handler(new_checked, window);
+                });
+            }
+        }
 
         // Add icon if checked or indeterminate
         let checkbox_box = if let Some(icon) = self.render_icon(&tokens) {

@@ -1,6 +1,7 @@
 //! Text input component with validation states.
 
 use gpui::*;
+use std::rc::Rc;
 use crate::theme::{InputTokens, Theme};
 
 /// Input configuration properties
@@ -16,6 +17,8 @@ pub struct InputProps {
     pub error: bool,
     /// Optional error message
     pub error_message: Option<SharedString>,
+    /// Change handler
+    pub on_change: Option<Rc<dyn Fn(&str, &mut Window) + 'static>>,
 }
 
 impl Default for InputProps {
@@ -26,6 +29,7 @@ impl Default for InputProps {
             disabled: false,
             error: false,
             error_message: None,
+            on_change: None,
         }
     }
 }
@@ -138,6 +142,22 @@ impl Input {
         self
     }
 
+    /// Set the change handler
+    ///
+    /// ## Example
+    ///
+    /// ```rust,ignore
+    /// Input::new()
+    ///     .placeholder("Enter text...")
+    ///     .on_change(|value, window| {
+    ///         println!("Input changed to: {}", value);
+    ///     });
+    /// ```
+    pub fn on_change(mut self, handler: impl Fn(&str, &mut Window) + 'static) -> Self {
+        self.props.on_change = Some(Rc::new(handler));
+        self
+    }
+
     /// Get border color based on state
     fn border_color(&self, tokens: &InputTokens) -> Hsla {
         if self.props.error {
@@ -181,7 +201,7 @@ impl Render for Input {
             .gap(tokens.padding_y / 2.0);
 
         // Build input field
-        let field = div()
+        let mut field = div()
             .px(tokens.padding_x)
             .py(tokens.padding_y)
             .bg(self.background_color(&tokens))
@@ -191,6 +211,17 @@ impl Render for Input {
             .border_color(self.border_color(&tokens))
             .border(tokens.border_width)
             .rounded(tokens.border_radius);
+
+        // Wire up change handler if provided and not disabled
+        if let Some(ref handler) = self.props.on_change {
+            if !self.props.disabled {
+                let handler = handler.clone();
+                let value = self.props.value.clone();
+                field = field.on_mouse_down(MouseButton::Left, move |_event, window, _cx| {
+                    handler(&value, window);
+                });
+            }
+        }
 
         // Show placeholder or value
         let content = if self.props.value.is_empty() {
@@ -234,7 +265,7 @@ impl IntoElement for Input {
             .gap(tokens.padding_y / 2.0);
 
         // Build input field
-        let field = div()
+        let mut field = div()
             .px(tokens.padding_x)
             .py(tokens.padding_y)
             .bg(self.background_color(&tokens))
@@ -244,6 +275,16 @@ impl IntoElement for Input {
             .border_color(self.border_color(&tokens))
             .border(tokens.border_width)
             .rounded(tokens.border_radius);
+
+        // Wire up change handler if provided and not disabled
+        if let Some(handler) = self.props.on_change {
+            if !self.props.disabled {
+                let value = self.props.value.clone();
+                field = field.on_mouse_down(MouseButton::Left, move |_event, window, _cx| {
+                    handler(&value, window);
+                });
+            }
+        }
 
         // Show placeholder or value
         let content = if self.props.value.is_empty() {

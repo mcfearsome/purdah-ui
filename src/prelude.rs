@@ -25,6 +25,7 @@ pub use crate::atoms::{
     Radio, RadioProps,
     Spinner, SpinnerColor, SpinnerProps, SpinnerSize,
     Switch, SwitchProps,
+    icons, // Icon constants library
 };
 
 // Re-export layout components
@@ -35,8 +36,12 @@ pub use crate::layout::{
 // Re-export molecule components
 pub use crate::molecules::{
     Card, CardProps, CardVariant,
+    Dropdown, DropdownOption, DropdownProps, DropdownVariant,
     FormGroup, FormGroupProps,
+    Popover, PopoverPosition, PopoverProps,
     SearchBar, SearchBarProps,
+    Tab, TabGroup, TabGroupProps, TabGroupVariant,
+    Tooltip, TooltipPosition, TooltipProps,
 };
 
 // Re-export organism components
